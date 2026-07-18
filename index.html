@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شاشة المدرب - كابتن مصطفى</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #000000; --card-bg: rgba(15, 15, 15, 0.88); --text-main: #ffffff; --text-muted: #a1a1aa; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.92)), url('https://unsplash.com'); background-size: cover; background-position: center top; background-attachment: fixed; margin: 0; padding: 20px; color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; background: rgba(20, 20, 20, 0.6); padding: 25px; border-radius: 12px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        header h1 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+        header h1 span { color: var(--primary); }
+        .header-meta-box { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 15px; }
+        .captain-global-notes { background: rgba(20, 20, 22, 0.9); border-right: 4px solid var(--primary); padding: 12px 20px; border-radius: 6px; font-size: 14px; max-width: 600px; width: 100%; box-sizing: border-box; text-align: right; }
+        .stats-badge-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .stats-badge { background: rgba(250, 204, 21, 0.1); border: 1px solid var(--primary); padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .stats-badge span[contenteditable="true"] { color: var(--primary); padding: 0 4px; }
+        .trainer-control-panel { background: var(--card-bg); border-radius: 16px; padding: 25px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        .form-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .form-group label { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .form-group input, .form-group select { background: #000; border: 1px solid #222; color: white; padding: 12px; border-radius: 8px; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
+        .btn-action { background: var(--primary); color: #000; border: none; padding: 12px 28px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .day-card { background: var(--card-bg); border-radius: 16px; padding: 30px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; backdrop-filter: blur(10px); border-top: 6px solid var(--primary); }
+        .day-card::before { content: "\f062"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 20px; left: 30px; font-size: 35px; color: var(--primary); transform: rotate(-15deg); opacity: 0.8; }
+        .day-title { font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .exercise-column { background: #121214; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .exercise-column:hover { border-color: var(--primary); transform: translateY(-4px); }
+        .btn-delete-exercise { position: absolute; top: 15px; left: 15px; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 5px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .ex-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-left: 25px; }
+        .ex-header i { color: var(--primary); font-size: 16px; }
+        .ex-name { font-weight: bold; font-size: 18px; color: #fff; width: 100%; border-bottom: 1px solid #27272a; padding-bottom: 5px; }
+        .ex-meta-info { background: rgba(0, 0, 0, 0.5); padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .ex-details { font-size: 14px; margin-bottom: 8px; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .ex-details b { color: var(--primary); }
+        .ex-details span { color: #fff; font-weight: 600; }
+        .ex-notes { font-size: 13px; color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 6px; border-right: 3px solid var(--primary); margin-bottom: 15px; min-height: 40px; font-style: italic; }
+        .video-url-input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 8px; font-size: 12px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background-color: var(--primary); color: #000; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: bold; }
+        [contenteditable="true"]:focus { outline: 2px solid var(--primary); background: #27272a; border-radius: 4px; padding: 2px 6px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><i class="fa-solid fa-user-gear"></i> لوحة تحكم المدرب - <span>كابتن مصطفى</span></h1>
+        <div class="header-meta-box">
+            <div class="stats-badge-container">
+                <div class="stats-badge"><i class="fa-solid fa-weight-scale"></i> الوزن الحالي: <span contenteditable="true" id="clientWeight" onblur="saveAllData()">85</span> كجم</div>
+                <div class="stats-badge"><i class="fa-solid fa-percent"></i> نسبة الدهون: <span contenteditable="true" id="clientFat" onblur="saveAllData()">15</span> %</div>
+            </div>
+            <div class="captain-global-notes" contenteditable="true" id="captainGlobalNotes" onblur="saveAllData()">💡 ملاحظة الكابتن العامة للمتدرب: يرجى الالتزام التام بجدول النوم وشرب ما لا يقل عن 4 لتر ماء يومياً.</div>
+        </div>
+    </header>
+    <div class="trainer-control-panel">
+        <div class="form-group"><label>اسم المتدرب البطل:</label><input type="text" id="clientName" value="أحمد علي" oninput="saveConfig()"></div>
+        <div class="form-group"><label>عدد الأيام التدريبية (حتى 7):</label><select id="daysCount" onchange="saveConfig()"><option value="2">جزءان</option><option value="3">3 أيام</option><option value="4" selected>4 أيام</option><option value="5">5 أيام</option><option value="6">6 أيام</option><option value="7">7 أيام</option></select></div>
+        <div class="form-group"><label>عدد التمارين المبدئي (حتى 10):</label><select id="exercisesCount" onchange="saveConfig()"><option value="3">3 تمارين</option><option value="4" selected>4 تمارين</option><option value="5">5 تمارين</option><option value="6">6 تمارين</option><option value="7">7 تمارين</option><option value="8">8 تمارين</option><option value="9">9 تمارين</option><option value="10">10 تمارين كاملة</option></select></div>
+        <button class="btn-action" onclick="buildNewSchedule()"><i class="fa-solid fa-bolt"></i> توليد الهيكل المبدئي ⚡</button>
+    </div>
+    <div id="scheduleAppContainer"></div>
+</div>
+<script>
+function buildNewSchedule() {
+    const clientName = document.getElementById('clientName').value; const daysCount = parseInt(document.getElementById('daysCount').value); const exercisesCount = parseInt(document.getElementById('exercisesCount').value);
+    let html = `<h2 style="text-align:center; margin-bottom:35px; color:#fff;" contenteditable="true" id="tableHeaderTitle" onblur="saveAllData()">📋 الخطة التدريبية المخصصة: ${clientName}</h2>`;
+    const defaultLabels = ["اليوم الأول", "اليوم الثاني", "اليوم الثالث", "اليوم الرابع", "اليوم الخامس", "اليوم السادس", "اليوم السابع"];
+    for (let d = 1; d <= daysCount; d++) {
+        html += `<div class="day-card"><div class="day-title" contenteditable="true" onblur="saveAllData()"><i class="fa-solid fa-arrow-trend-up"></i> ${defaultLabels[d-1] || `اليوم ${d}`}</div><div class="exercises-grid">`;
+        for (let e = 1; e <= exercisesCount; e++) {
+            html += `<div class="exercise-column" id="ex-card-${d}-${e}"><button class="btn-delete-exercise" onclick="deleteExerciseCard('${d}', '${e}')"><i class="fa-solid fa-trash-can"></i></button><div><div class="ex-header"><i class="fa-solid fa-dumbbell"></i><div class="ex-name" contenteditable="true" onblur="saveAllData()">تمرين ${e}: [اسم التمرين]</div></div><div class="ex-meta-info"><div class="ex-details"><b>المجموعات:</b> <span contenteditable="true" onblur="saveAllData()">4</span></div><div class="ex-details"><b>التكرارات:</b> <span contenteditable="true" onblur="saveAllData()">10-12</span></div></div><div class="ex-notes" contenteditable="true" onblur="saveAllData()">ملاحظة الأداء والتكنيك...</div></div><div class="video-input-box"><input type="text" class="video-url-input" placeholder="🔗 رابط الفيديو" oninput="liveUpdateVideoLink(this)"><a href="#" target="_blank" class="btn-video"><i class="fa-brands fa-youtube"></i> فيديو الشرح</a></div></div>`;
+        }
+        html += `</div></div>`;
+    }
+    document.getElementById('scheduleAppContainer').innerHTML = html; saveAllData();
+}
+function deleteExerciseCard(dayIndex, exerciseIndex) { const card = document.getElementById(`ex-card-${dayIndex}-${exerciseIndex}`); if (card) { card.remove(); saveAllData(); } }
+function liveUpdateVideoLink(inputEl) { const btnVideo = inputEl.nextElementSibling; btnVideo.href = inputEl.value ? inputEl.value : "#"; saveAllData(); }
+function saveConfig() { localStorage.setItem('gym_clientName_m', document.getElementById('clientName').value); localStorage.setItem('gym_daysCount_m', document.getElementById('daysCount').value); localStorage.setItem('gym_exercisesCount_m', document.getElementById('exercisesCount').value); localStorage.setItem('gym_clientWeight_m', document.getElementById('clientWeight').innerText); localStorage.setItem('gym_clientFat_m', document.getElementById('clientFat').innerText); localStorage.setItem('gym_captainGlobalNotes_m', document.getElementById('captainGlobalNotes').innerText); }
+function saveAllData() { saveConfig(); const containerHtml = document.getElementById('scheduleAppContainer').innerHTML; localStorage.setItem('gym_full_html_data_m', containerHtml); const inputs = document.querySelectorAll('.video-url-input'); const inputValues = []; inputs.forEach(input => inputValues.push(input.value)); localStorage.setItem('gym_input_links_m', JSON.stringify(inputValues)); }
+function loadAllData() {
+    if(localStorage.getItem('gym_clientName_m')) { document.getElementById('clientName').value = localStorage.getItem('gym_clientName_m'); document.getElementById('daysCount').value = localStorage.getItem('gym_daysCount_m'); document.getElementById('exercisesCount').value = localStorage.getItem('gym_exercisesCount_m'); }
+    if(localStorage.getItem('gym_clientWeight_m')) document.getElementById('clientWeight').innerText = localStorage.getItem('gym_clientWeight_m');
+    if(localStorage.getItem('gym_clientFat_m')) document.getElementById('clientFat').innerText = localStorage.getItem('gym_clientFat_m');
+    if(localStorage.getItem('gym_captainGlobalNotes_m')) document.getElementById('captainGlobalNotes').innerText = localStorage.getItem('gym_captainGlobalNotes_m');
+    if(localStorage.getItem('gym_full_html_data_m')) { document.getElementById('scheduleAppContainer').innerHTML = localStorage.getItem('gym_full_html_data_m'); if(localStorage.getItem('gym_input_links_m')) { const savedValues = JSON.parse(localStorage.getItem('gym_input_links_m')); const inputs = document.querySelectorAll('.video-url-input'); inputs.forEach((input, index) => { if(savedValues[index]) { input.value = savedValues[index]; const btnVideo = input.nextElementSibling; btnVideo.href = savedValues[index]; } }); } } else { buildNewSchedule(); }
+}
+window.onload = loadAllData;
+</script>
+</body>
+</html>

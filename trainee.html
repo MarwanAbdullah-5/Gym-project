@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطة المتدرب البطل - كابتن مصطفى</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { --primary: #facc15; --dark-bg: #000000; --card-bg: rgba(15, 15, 15, 0.88); --text-main: #ffffff; --text-muted: #a1a1aa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.92)), url('https://unsplash.com'); background-size: cover; background-position: center top; background-attachment: fixed; margin: 0; padding: 20px; color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; background: rgba(20, 20, 20, 0.6); padding: 25px; border-radius: 12px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        header h1 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+        header h1 span { color: var(--primary); }
+        .header-meta-box { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 15px; }
+        .captain-global-notes { background: rgba(20, 20, 22, 0.9); border-right: 4px solid var(--primary); padding: 12px 20px; border-radius: 6px; font-size: 14px; max-width: 600px; width: 100%; box-sizing: border-box; text-align: right; }
+        .stats-badge-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .stats-badge { background: rgba(250, 204, 21, 0.1); border: 1px solid var(--primary); padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .day-card { background: var(--card-bg); border-radius: 16px; padding: 30px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; backdrop-filter: blur(10px); border-top: 6px solid var(--primary); }
+        .day-card::before { content: "\f062"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 20px; left: 30px; font-size: 35px; color: var(--primary); transform: rotate(-15deg); opacity: 0.8; }
+        .day-title { font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .exercise-column { background: #121214; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .ex-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .ex-header i { color: var(--primary); font-size: 16px; }
+        .ex-name { font-weight: bold; font-size: 18px; color: #fff; width: 100%; border-bottom: 1px solid #27272a; padding-bottom: 5px; }
+        .ex-meta-info { background: rgba(0, 0, 0, 0.5); padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .ex-details { font-size: 14px; margin-bottom: 8px; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .ex-details b { color: var(--primary); }
+        .ex-details span { color: #fff; font-weight: 600; }
+        .ex-notes { font-size: 13px; color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 6px; border-right: 3px solid var(--primary); margin-bottom: 15px; min-height: 40px; font-style: italic; }
+        .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background-color: var(--primary); color: #000; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: bold; transition: all 0.2s; }
+        .btn-video:hover { background-color: #eab308; transform: translateY(-2px); }
+        .video-url-input, .btn-delete-exercise { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><i class="fa-solid fa-dumbbell"></i> الخطة التدريبية الأسبوعية التفاعلية - <span>كابتن مصطفى</span></h1>
+        <div class="header-meta-box">
+            <div class="stats-badge-container">
+                <div class="stats-badge"><i class="fa-solid fa-weight-scale"></i>  الوزن الحالي: <span id="clientWeight">--</span> كجم</div>
+                <div class="stats-badge"><i class="fa-solid fa-percent"></i> نسبة الدهون: <span id="clientFat">--</span> %</div>
+            </div>
+            <div class="captain-global-notes" id="captainGlobalNotes">💡 ملاحظة الكابتن العامة...</div>
+        </div>
+    </header>
+    <div id="scheduleAppContainer"></div>
+</div>
+<script>
+function loadAllData() {
+    if(localStorage.getItem('gym_clientWeight_m')) document.getElementById('clientWeight').innerText = localStorage.getItem('gym_clientWeight_m');
+    if(localStorage.getItem('gym_clientFat_m')) document.getElementById('clientFat').innerText = localStorage.getItem('gym_clientFat_m');
+    if(localStorage.getItem('gym_captainGlobalNotes_m')) document.getElementById('captainGlobalNotes').innerText = localStorage.getItem('gym_captainGlobalNotes_m');
+    if(localStorage.getItem('gym_full_html_data_m')) { 
+        document.getElementById('scheduleAppContainer').innerHTML = localStorage.getItem('gym_full_html_data_m');
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => el.setAttribute('contenteditable', 'false'));
+        if(localStorage.getItem('gym_input_links_m')) { 
+            const savedValues = JSON.parse(localStorage.getItem('gym_input_links_m')); 
+            const inputs = document.querySelectorAll('.video-url-input'); 
+            inputs.forEach((input, index) => { if(savedValues[index]) { const btnVideo = input.nextElementSibling; btnVideo.href = savedValues[index]; } }); 
+        } 
+    } else { document.getElementById('scheduleAppContainer').innerHTML = "<h3 style='text-align:center;color:var(--primary);'>لم يتم توليد أي جدول تدريبي حتى الآن من قِبل الكابتن.</h3>"; }
+}
+window.onload = loadAllData;
+</script>
+</body>
+</html>
