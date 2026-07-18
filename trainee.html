@@ -86,27 +86,3 @@
 </body>
 </html>
 
-<!-- 1. استدعاء مكتبات الفايربيس الأساسية -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
-<!-- 2. ربط مشروعك وتشغيله -->
-<script>
-  // استبدل هذا الجزء بكود الإعدادات الحقيقي اللي نسخته من موقع الفايربيس
- const firebaseConfig = {
-  apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
-  authDomain: "gym-training-by-mostafa.firebaseapp.com",
-  projectId: "gym-training-by-mostafa",
-  storageBucket: "gym-training-by-mostafa.firebasestorage.app",
-  messagingSenderId: "397520948690",
-  appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
-  measurementId: "G-EWZEGSFP99"
-};
-
-  // تشغيل الفايربيس في الموقع
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-</script>
-
