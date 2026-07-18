@@ -247,36 +247,65 @@ function addExerciseField(dayIndex, name='', sets='', reps='', rest='', rpe='', 
     `;
     grid.appendChild(box);
 }
-
+    
 function saveDataToServer() {
     const clientKey = document.getElementById('clientKeyInput').value.trim();
     if (!clientKey) { alert("يرجى إدخال اسم المتدرب أولاً"); return; }
+
     const dayCards = document.querySelectorAll('.day-card');
     const weight = document.getElementById('clientWeightInput').value;
     const fat = document.getElementById('clientFatInput').value;
     const globalNotes = document.getElementById('globalNotesInput').value;
-    let stateArray = []; 
+    
+    let stateArray = [];
+    let fullHtml = ""; // هذا الحقل هو سر الحل
+
     dayCards.forEach((card) => {
         const dayName = card.querySelector('.day-title-input').value.trim();
         const exercises = card.querySelectorAll('.exercise-column');
         let dayState = [];
+        
+        fullHtml += `<div class="day-card"><div class="day-title">${dayName}</div><div class="exercises-grid">`;
+
         exercises.forEach(ex => {
-            dayState.push({ 
-                name: ex.querySelector('.ex-name-input').value.trim(),
-                sets: ex.querySelector('.ex-sets').value.trim(),
-                reps: ex.querySelector('.ex-reps').value.trim(),
-                rest: ex.querySelector('.ex-rest').value.trim(),
-                rpe: ex.querySelector('.ex-rpe').value.trim(),
-                video: ex.querySelector('.video-url-input').value.trim(),
-                hideRest: ex.querySelector('.ex-rest').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true",
-                hideRpe: ex.querySelector('.ex-rpe').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true",
-                hideVideo: ex.querySelector('.video-url-input').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true"
-            });
+            const name = ex.querySelector('.ex-name-input').value.trim();
+            const sets = ex.querySelector('.ex-sets').value.trim();
+            const reps = ex.querySelector('.ex-reps').value.trim();
+            const rest = ex.querySelector('.ex-rest').value.trim();
+            const rpe = ex.querySelector('.ex-rpe').value.trim();
+            const video = ex.querySelector('.video-url-input').value.trim();
+            
+            const hideRest = ex.querySelector('.ex-rest').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
+            const hideRpe = ex.querySelector('.ex-rpe').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
+            const hideVideo = ex.querySelector('.video-url-input').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
+
+            dayState.push({ name, sets, reps, rest, rpe, video, hideRest, hideRpe, hideVideo });
+
+            fullHtml += `<div class="exercise-column">
+                <div class="ex-header">${name}</div>
+                <div class="ex-details">
+                    <b>الجولات:</b> <span>${sets}</span> <b>التكرارات:</b> <span>${reps}</span>
+                    ${!hideRest ? `<br><b>الراحة:</b> <span>${rest}</span>` : ''}
+                    ${!hideRpe ? `<br><b>الجهد RPE:</b> <span>${rpe}</span>` : ''}
+                </div>
+                ${!hideVideo && video ? `<a href="${video}" target="_blank" class="btn-video"><i class="fa-brands fa-youtube"></i> فيديو التمرين</a>` : ''}
+            </div>`;
         });
+        
+        fullHtml += `</div></div>`;
         stateArray.push({ dayName, exercises: dayState });
     });
-    db.collection("gym_schedules").doc(clientKey).set({ weight, fat, globalNotes, editorState: JSON.stringify(stateArray) })
-    .then(() => { const s = document.getElementById('saveStatus'); s.style.display = "inline-flex"; setTimeout(() => s.style.display = "none", 2000); });
+
+    db.collection("gym_schedules").doc(clientKey).set({ 
+        weight, fat, globalNotes, 
+        editorState: JSON.stringify(stateArray),
+        fullHtml: fullHtml 
+    })
+    .then(() => { 
+        const s = document.getElementById('saveStatus'); 
+        s.style.display = "inline-flex"; 
+        setTimeout(() => s.style.display = "none", 2000); 
+    });
 }
 
 function loadTraineeDataFromServer(clientKey) {
