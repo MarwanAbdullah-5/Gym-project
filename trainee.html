@@ -2,87 +2,163 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>صفحة المتدرب</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المتدرب البطل - كابتن مصطفى</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background: #111; color: #fff; padding: 20px; text-align: center; }
-        .container { max-width: 500px; margin: auto; background: #222; padding: 20px; border-radius: 10px; border: 1px solid #333; }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; box-sizing: border-box; }
-        button { background: #2980b9; color: white; font-weight: bold; cursor: pointer; }
-        #workoutSection { display: none; background: #27ae60; padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 18px; }
+        :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #000000; --card-bg: rgba(15, 15, 15, 0.88); --text-main: #ffffff; --text-muted: #a1a1aa; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.92)), url('https://unsplash.com'); background-size: cover; background-position: center top; background-attachment: fixed; margin: 0; padding: 20px; color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* شاشة تسجيل الدخول */
+        .login-box { max-width: 450px; margin: 100px auto; background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; }
+        .login-box h2 { font-size: 26px; margin-bottom: 25px; font-weight: 800; }
+        .login-box h2 span { color: var(--primary); }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; text-align: right; }
+        .form-group label { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+        .form-group input { background: #000; border: 1px solid #222; color: white; padding: 14px; border-radius: 8px; font-family: inherit; font-size: 15px; }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+        .btn-login { width: 100%; background: var(--primary); color: #000; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-login:hover { background: var(--primary-hover); }
+        #errorStatus { color: var(--danger); font-weight: 600; margin-top: 15px; font-size: 14px; }
+
+        /* شاشة عرض الجدول بعد الدخول */
+        header { text-align: center; margin-bottom: 30px; background: rgba(20, 20, 20, 0.6); padding: 25px; border-radius: 12px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        header h1 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+        header h1 span { color: var(--primary); }
+        .header-meta-box { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 15px; }
+        .captain-global-notes { background: rgba(20, 20, 22, 0.9); border-right: 4px solid var(--primary); padding: 12px 20px; border-radius: 6px; font-size: 14px; max-width: 600px; width: 100%; box-sizing: border-box; text-align: right; }
+        .stats-badge-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .stats-badge { background: rgba(250, 204, 21, 0.1); border: 1px solid var(--primary); padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .stats-badge span { color: var(--primary); padding: 0 4px; }
+        .day-card { background: var(--card-bg); border-radius: 16px; padding: 30px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-top: 6px solid var(--primary); text-align: right; }
+        .day-title { font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .exercise-column { background: #121214; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; text-align: right; }
+        .ex-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .ex-header i { color: var(--primary); font-size: 16px; }
+        .ex-name { font-weight: bold; font-size: 18px; color: #fff; width: 100%; border-bottom: 1px solid #27272a; padding-bottom: 5px; }
+        .ex-meta-info { background: rgba(0, 0, 0, 0.5); padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .ex-details { font-size: 14px; margin-bottom: 8px; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .ex-details b { color: var(--primary); }
+        .ex-details span { color: #fff; font-weight: 600; }
+        .ex-notes { font-size: 13px; color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 6px; border-right: 3px solid var(--primary); margin-bottom: 15px; min-height: 40px; font-style: italic; }
+        .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background-color: var(--primary); color: #000; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- شاشة تسجيل الدخول -->
-        <div id="loginSection">
-            <h2>تسجيل دخول المتدرب 🔐</h2>
-            <input type="email" id="email" placeholder="البريد الإلكتروني">
-            <input type="password" id="password" placeholder="كلمة المرور">
-            <button onclick="login()">دخول</button>
-            <p id="errorStatus" style="color:#c0392b;"></p>
+<div class="container">
+    
+    <!-- 1️⃣ شاشة تسجيل الدخول -->
+    <div id="loginSection" class="login-box">
+        <h2>🔐 دخول البطل إلى <span>الخطة</span></h2>
+        <div class="form-group">
+            <label>البريد الإلكتروني للمتدرب:</label>
+            <input type="email" id="email" placeholder="example@gym.com">
         </div>
-
-        <!-- شاشة عرض الجدول للمتدرب بعد الدخول -->
-        <div id="workoutViewSection" style="display:none;">
-            <h2>أهلاً بك يا بطل 👋</h2>
-            <h3>جدول التمارين الخاص بك اليوم:</h3>
-            <div id="workoutContent">جاري تحميل جدولك...</div>
+        <div class="form-group">
+            <label>كلمة المرور:</label>
+            <input type="password" id="password" placeholder="••••••••">
         </div>
+        <button class="btn-login" onclick="login()">سجل دخولك يا بطل ⚡</button>
+        <p id="errorStatus"></p>
     </div>
 
-    <!-- الفايربيس -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script>
-        // ضع كود إعدادات الفايربيس الحقيقي الخاص بك هنا (نفس الكود السابق)
-         const firebaseConfig = {
-      apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
-      authDomain: "gym-training-by-mostafa.firebaseapp.com",
-      projectId: "gym-training-by-mostafa",
-      storageBucket: "gym-training-by-mostafa.firebasestorage.app",
-      messagingSenderId: "397520948690",
-      appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
-      measurementId: "G-EWZEGSFP99"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    <!-- 2️⃣ شاشة عرض الجدول (مخفية وتظهر بعد نجاح الدخول) -->
+    <div id="workoutViewSection" style="display:none;">
+        <header>
+            <h1><i class="fa-solid fa-dumbbell"></i> خطتك التدريبية - تحت إشراف <span>كابتن مصطفى</span></h1>
+            <div class="header-meta-box">
+                <div class="stats-badge-container">
+                    <div class="stats-badge"><i class="fa-solid fa-weight-scale"></i> الوزن الحالي: <span id="clientWeight">--</span> كجم</div>
+                    <div class="stats-badge"><i class="fa-solid fa-percent"></i> نسبة الدهون: <span id="clientFat">--</span> %</div>
+                </div>
+                <div class="captain-global-notes" id="captainGlobalNotes">💡 جاري تحميل ملاحظات الكابتن...</div>
+            </div>
+        </header>
+        
+        <div id="scheduleAppContainer"></div>
+    </div>
+</div>
 
-        function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorStatus = document.getElementById('errorStatus');
+<!-- مكتبات الفايربيس السحابية المحدثة ببياناتك الحقيقية -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-            auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // استخراج اسم المتدرب من الإيميل (مثال: ahmed@gym.com سيأخذ كلمة ahmed)
-                const traineeName = email.split('@')[0];
-                
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('workoutViewSection').style.display = 'block';
-                
-                // جلب الجدول من قاعدة البيانات بناءً على الاسم
-                loadWorkout(traineeName);
-            })
-            .catch((error) => {
-                errorStatus.innerText = "خطأ في تسجيل الدخول: " + error.message;
-            });
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
+    authDomain: "gym-training-by-mostafa.firebaseapp.com",
+    projectId: "gym-training-by-mostafa",
+    storageBucket: "gym-training-by-mostafa.firebasestorage.app",
+    messagingSenderId: "397520948690",
+    appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
+    measurementId: "G-EWZEGSFP99"
+};
+
+// تشغيل الفايربيس
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorStatus = document.getElementById('errorStatus');
+
+    auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+        // استخراج معرف المتدرب قبل الـ @ (مثال: ahmed@gym.com يصبح اسمه ahmed)
+        const traineeName = email.split('@')[0];
+        
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('workoutViewSection').style.display = 'block';
+        
+        // جلب البيانات فورا من السيرفر
+        loadTraineeWorkout(traineeName);
+    })
+    .catch((error) => {
+        errorStatus.innerText = "خطأ في تسجيل الدخول: " + error.message;
+    });
+}
+
+function loadTraineeWorkout(name) {
+    db.collection("gym_schedules").doc(name).get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            // وضع البيانات الإحصائية للكابتن
+            document.getElementById('clientWeight').innerText = data.weight || "--";
+            document.getElementById('clientFat').innerText = data.fat || "--";
+            document.getElementById('captainGlobalNotes').innerText = data.globalNotes || "لا توجد ملاحظات عامة.";
+            
+            // حقن الهيكل والتصميم الرائع للتمارين
+            document.getElementById('scheduleAppContainer').innerHTML = data.fullHtml || "";
+            
+            // إخفاء خانات وروابط إدخال المدرس وجعل أزرار الفيديو تعمل مباشرة للمتدرب
+            const inputs = document.querySelectorAll('.video-url-input');
+            const deleteButtons = document.querySelectorAll('.btn-delete-exercise');
+            
+            deleteButtons.forEach(btn => btn.remove()); // إخفاء أزرار الحذف للمتدرب
+            
+            if (data.videoLinks) {
+                const savedValues = JSON.parse(data.videoLinks);
+                inputs.forEach((input, index) => {
+                    if(savedValues[index]) {
+                        const btnVideo = input.nextElementSibling;
+                        btnVideo.href = savedValues[index];
+                        btnVideo.style.display = "flex";
+                    }
+                    input.style.display = "none"; // إخفاء صندوق الإدخال حتى يبقى المظهر نظيفاً للمتدرب
+                });
+            }
+        } else {
+            document.getElementById('scheduleAppContainer').innerHTML = `<h3 style="text-align:center; color:var(--primary);">لم يقم الكابتن مصطفى بإضافة جدول تدريبي لك بعد! 🏋️‍♂️</h3>`;
         }
-
-        function loadWorkout(name) {
-            const workoutContent = document.getElementById('workoutContent');
-            db.collection("workouts").doc(name).get().then((doc) => {
-                if (doc.exists) {
-                    workoutContent.innerHTML = `<p style="white-space: pre-line; background:#27ae60; padding:15px; border-radius:5px;">${doc.data().workout}</p>`;
-                } else {
-                    workoutContent.innerText = "لم يتم إضافة جدول تمارين لك بعد من الكابتن مصطفى.";
-                }
-            }).catch((error) => {
-                workoutContent.innerText = "حدث خطأ أثناء جلب البيانات.";
-            });
-        }
-    </script>
+    }).catch((error) => {
+        console.error("Error fetching data: ", error);
+    });
+}
+</script>
 </body>
 </html>
-
