@@ -3,101 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم المدرب الذكية - كابتن مصطفى</title>
+    <title>لوحة تحكم الكابتن مروان</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- (باقي الـ CSS كما هو في الكود السابق لضمان تطابق الشكل) -->
     <style>
         :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #0b0b0c; --card-bg: #121214; --border-color: #27272a; --text-main: #ffffff; --text-muted: #a1a1aa; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); margin: 0; padding: 20px; color: var(--text-main); }
         .container { max-width: 1300px; margin: 0 auto; }
         header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
-        header h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; }
-        header h1 span { color: var(--primary); }
-        
-        .manager-bar { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
-        .search-zone { display: flex; align-items: center; gap: 10px; flex-grow: 1; flex-wrap: wrap; }
-        .search-zone select, .search-zone input { background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px 15px; border-radius: 6px; font-size: 15px; font-family: inherit; }
-        .search-zone select { min-width: 200px; cursor: pointer; }
-        .search-zone input { width: 140px; }
-        .search-zone select:focus, .search-zone input:focus { border-color: var(--primary); outline: none; }
-        
-        .meta-inputs { display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color); width: 100%; margin-top: 15px; }
-        .meta-group { display: flex; align-items: center; gap: 8px; }
-        .meta-group label { font-size: 14px; color: var(--text-muted); font-weight: bold; }
-        .meta-group input { background: #000; border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 6px; width: 90px; text-align: center; }
-        .meta-group.notes-group { flex-grow: 1; }
-        .meta-group.notes-group input { width: 100%; text-align: right; }
-
-        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        .btn:hover { background: var(--primary-hover); }
-        .btn-secondary { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
-        .btn-secondary:hover { background: #3f3f46; }
-        .btn-save { background: #22c55e; color: #fff; font-size: 16px; padding: 12px 25px; }
-        .btn-save:hover { background: #16a34a; }
-        
-        #saveStatus { font-weight: bold; font-size: 14px; color: #4ade80; display: inline-flex; align-items: center; gap: 5px; }
-        
-        .day-card { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border-color); border-top: 4px solid var(--primary); }
-        .day-title-input { background: transparent; border: none; border-bottom: 2px dashed #3f3f46; color: #fff; font-size: 22px; font-weight: bold; margin-bottom: 20px; padding: 5px; width: 300px; font-family: inherit; }
-        .day-title-input:focus { border-color: var(--primary); outline: none; }
-        
-        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .exercise-column { background: #18181b; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; position: relative; }
-        .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .ex-name-input { background: transparent; border: none; border-bottom: 1px solid #3f3f46; color: #fff; font-size: 16px; font-weight: bold; padding: 5px 0; width: 85%; }
-        .ex-name-input:focus { border-color: var(--primary); outline: none; }
-        .btn-delete-exercise { background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 16px; }
-        
-        .ex-details-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .field-box { display: flex; flex-direction: column; gap: 4px; position: relative; }
-        .field-box-header { display: flex; justify-content: space-between; align-items: center; }
-        .field-box label { font-size: 12px; color: var(--text-muted); }
-        .field-box input { background: #000; border: 1px solid #3f3f46; color: #fff; padding: 6px; border-radius: 4px; font-size: 13px; }
-        .field-box input:focus { border-color: var(--primary); outline: none; }
-        
-        .toggle-visibility { background: transparent; border: none; color: #a1a1aa; cursor: pointer; font-size: 12px; padding: 2px; }
-        .toggle-visibility.hidden-mode { color: #ef4444; }
-        
-        .video-url-input { background: #000; border: 1px solid #3f3f46; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
+        .manager-bar { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .btn-save { background: #22c55e; color: #fff; padding: 12px 25px; }
+        .import-box { background: #18181b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed var(--primary); }
     </style>
 </head>
 <body>
 <div class="container">
-    <header>
-        <h1>🚀 لوحة المدرب المتقدمة | تحت إشراف <span>كابتن مصطفى</span></h1>
-        <p style="color: var(--text-muted); margin: 5px 0 0 0;">ابحث عن اللاعب 🔍 ← عدل بياناته وأيامه وحقوله ✏️ ← اضغط حفظ التعديلات 💾</p>
-    </header>
+    <header><h1>لوحة التحكم المتقدمة | <span>الكابتن مروان</span></h1></header>
 
     <div class="manager-bar">
-        <div class="search-zone">
-            <i class="fa-solid fa-user-check" style="color: var(--primary); font-size: 18px;"></i>
-            <select id="traineeSelector" onchange="selectTrainee(this.value)">
-                <option value="">-- اختر متدرباً مسجلاً --</option>
-            </select>
-            <span style="color: var(--text-muted);">أو اكتب معرف يدوي:</span>
-            <input type="text" id="clientKeyInput" value="mostafa" placeholder="مثال: mostafa">
-            
-            <button class="btn" onclick="executeSearch()"><i class="fa-solid fa-magnifying-glass"></i> بحث واستدعاء الجدول 🔍</button>
-        </div>
-        
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <button class="btn btn-secondary" onclick="generateDefaultStructure()">+ هيكل سبعة أيام فارغ</button>
-            <button class="btn btn-save" onclick="saveDataToServer()"><i class="fa-solid fa-floppy-disk"></i> حفظ وتحديث الجدول التدريبي 💾</button>
-            <span id="saveStatus" style="display: none;"><i class="fa-solid fa-circle-check"></i> تم الحفظ!</span>
-        </div>
+        <input type="text" id="clientKeyInput" placeholder="اسم المتدرب" style="padding:10px; border-radius:6px;">
+        <button class="btn" onclick="executeSearch()">بحث واستدعاء</button>
+        <button class="btn btn-save" onclick="saveDataToServer()">حفظ وتحديث الجدول 💾</button>
+    </div>
 
-        <div class="meta-inputs">
-            <div class="meta-group">
-                <label><i class="fa-solid fa-weight-scale"></i> الوزن (كجم):</label>
-                <input type="text" id="clientWeightInput" placeholder="--">
-            </div>
-            <div class="meta-group">
-                <label><i class="fa-solid fa-percent"></i> الدهون (%):</label>
-                <input type="text" id="clientFatInput" placeholder="--">
-            </div>
-            <div class="meta-group notes-group">
-                <label><i class="fa-solid fa-comment-dots"></i> ملاحظات كابتن مصطفى العامة لهذا اللاعب:</label>
-                <input type="text" id="globalNotesInput" placeholder="اكتب توجيهات عامة للاعب تظهر في أعلى صفحته...">
-            </div>
+    <!-- منطقة الاستيراد الجديدة -->
+    <div class="import-box">
+        <h3 style="margin-top:0; color:var(--primary);">استيراد جدول من متدرب آخر 📋</h3>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="importFromId" placeholder="اسم المتدرب المراد النسخ منه..." style="flex:1; padding:10px; border-radius:6px; background:#000; color:#fff; border:1px solid #3f3f46;">
+            <button onclick="importSchedule()" style="background:#2563eb; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">استيراد</button>
         </div>
     </div>
 
@@ -106,277 +41,37 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
-    authDomain: "gym-training-by-mostafa.firebaseapp.com",
-    projectId: "gym-training-by-mostafa",
-    storageBucket: "gym-training-by-mostafa.firebasestorage.app",
-    messagingSenderId: "397520948690",
-    appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
-    measurementId: "G-EWZEGSFP99"
-};
-
+// (ضع إعدادات الفايربيس FirebaseConfig الخاصة بك هنا كما كانت في الكود السابق)
+const firebaseConfig = { /* ... نفس الإعدادات السابقة ... */ };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const daysOfWeek = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
-let isSubmitting = false;
+// دالة الاستيراد الجديدة
+function importSchedule() {
+    const sourceId = document.getElementById('importFromId').value.trim().toLowerCase();
+    if (!sourceId) { alert("اكتب اسم المتدرب القديم!"); return; }
 
-window.addEventListener('DOMContentLoaded', () => {
-    loadTraineesList();
-    executeSearch();
-});
-
-function loadTraineesList() {
-    db.collection("gym_schedules").get().then((querySnapshot) => {
-        const selector = document.getElementById('traineeSelector');
-        selector.innerHTML = '<option value="">-- اختر متدرباً مسجلاً --</option>';
-        querySnapshot.forEach((doc) => {
-            const option = document.createElement('option');
-            option.value = doc.id;
-            option.innerText = `المتدرب: ${doc.id}`;
-            selector.appendChild(option);
-        });
-    }).catch(err => console.error(err));
-}
-
-function selectTrainee(selectedKey) {
-    if(!selectedKey) return;
-    document.getElementById('clientKeyInput').value = selectedKey;
-    executeSearch();
-}
-
-function executeSearch() {
-    const key = document.getElementById('clientKeyInput').value.trim();
-    if(!key) return;
-    loadTraineeDataFromServer(key);
-}
-
-function toggleFieldVisibility(btn) {
-    btn.classList.toggle('hidden-mode');
-    const icon = btn.querySelector('i');
-    if(btn.classList.contains('hidden-mode')) {
-        icon.className = "fa-solid fa-eye-slash";
-        btn.dataset.hidden = "true";
-    } else {
-        icon.className = "fa-solid fa-eye";
-        btn.dataset.hidden = "false";
-    }
-}
-
-function generateDefaultStructure() {
-    if(!confirm("هل تريد بناء هيكل أيام جديد؟")) return;
-    isSubmitting = true; 
-    const app = document.getElementById('scheduleBuilderApp');
-    app.innerHTML = "";
-    
-    daysOfWeek.forEach((day, dayIndex) => {
-        createDayCardElement(dayIndex, day, []);
-    });
-    isSubmitting = false;
-}
-
-function createDayCardElement(dayIndex, dayName, exercisesArray = []) {
-    const app = document.getElementById('scheduleBuilderApp');
-    const dayCard = document.createElement('div');
-    dayCard.className = 'day-card';
-    dayCard.innerHTML = `
-        <div style="display:flex; align-items:center; gap:10px;">
-            <i class="fa-solid fa-calendar-day" style="color:var(--primary); font-size:20px;"></i>
-            <input type="text" class="day-title-input" value="${dayName}" placeholder="اسم اليوم (مثال: السبت - صدر)">
-        </div>
-        <div class="exercises-grid" id="grid-day-${dayIndex}"></div>
-        <button class="btn btn-secondary" style="margin-top:15px; padding:6px 12px; font-size:12px;" onclick="addExerciseField(${dayIndex})">
-            <i class="fa-solid fa-plus"></i> إضافة تمرين
-        </button>
-    `;
-    app.appendChild(dayCard);
-    
-    const grid = document.getElementById(`grid-day-${dayIndex}`);
-    if(exercisesArray.length === 0) {
-        for(let i=0; i<3; i++) { addExerciseField(dayIndex); }
-    } else {
-        exercisesArray.forEach(ex => {
-            addExerciseField(dayIndex, ex.name, ex.sets, ex.reps, ex.rest, ex.rpe, ex.video, ex.hideRest, ex.hideRpe, ex.hideVideo);
-        });
-    }
-}
-
-function addExerciseField(dayIndex, name='', sets='', reps='', rest='', rpe='', video='', hideRest=false, hideRpe=false, hideVideo=false) {
-    const grid = document.getElementById(`grid-day-${dayIndex}`);
-    if(!grid) return;
-    
-    const box = document.createElement('div');
-    box.className = 'exercise-column';
-    box.innerHTML = `
-        <div class="ex-header">
-            <input type="text" class="ex-name-input" value="${name}" placeholder="اسم التمرين...">
-            <button class="btn-delete-exercise" onclick="this.parentElement.parentElement.remove();">
-                <i class="fa-solid fa-trash-can"></i>
-            </button>
-        </div>
-        <div class="ex-details-form">
-            <div class="field-box"><label>الجولات</label><input type="text" class="ex-sets" value="${sets}" placeholder="4"></div>
-            <div class="field-box"><label>التكرارات</label><input type="text" class="ex-reps" value="${reps}" placeholder="12"></div>
-            
-            <div class="field-box">
-                <div class="field-box-header">
-                    <label>الراحة</label>
-                    <button class="toggle-visibility ${hideRest ? 'hidden-mode' : ''}" data-hidden="${hideRest}" onclick="toggleFieldVisibility(this)" title="إخفاء/إظهار عن اللاعب">
-                        <i class="fa-solid ${hideRest ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                    </button>
-                </div>
-                <input type="text" class="ex-rest" value="${rest}" placeholder="90 ثانية">
-            </div>
-            
-            <div class="field-box">
-                <div class="field-box-header">
-                    <label>الجهد RPE</label>
-                    <button class="toggle-visibility ${hideRpe ? 'hidden-mode' : ''}" data-hidden="${hideRpe}" onclick="toggleFieldVisibility(this)" title="إخفاء/إظهار عن اللاعب">
-                        <i class="fa-solid ${hideRpe ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                    </button>
-                </div>
-                <input type="text" class="ex-rpe" value="${rpe}" placeholder="8/10">
-            </div>
-        </div>
-        <div class="field-box">
-            <div class="field-box-header">
-                <label><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> رابط فيديو الشرح:</label>
-                <button class="toggle-visibility ${hideVideo ? 'hidden-mode' : ''}" data-hidden="${hideVideo}" onclick="toggleFieldVisibility(this)" title="إخفاء/إظهار عن اللاعب">
-                    <i class="fa-solid ${hideVideo ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                </button>
-            </div>
-            <input type="url" class="video-url-input" value="${video}" placeholder="https://youtube.com/...">
-        </div>
-    `;
-    grid.appendChild(box);
-}
-
-function saveDataToServer() {
-    const clientKey = document.getElementById('clientKeyInput').value.trim();
-    if (!clientKey) { alert("يرجى إدخال اسم المتدرب أولاً"); return; }
-    
-    const dayCards = document.querySelectorAll('.day-card');
-    if(dayCards.length === 0) { alert("الجدول فارغ! قم بإنشاء أيام أولاً."); return; }
-    
-    const weight = document.getElementById('clientWeightInput').value;
-    const fat = document.getElementById('clientFatInput').value;
-    const globalNotes = document.getElementById('globalNotesInput').value;
-    
-    let htmlOutput = "";
-    let stateArray = []; 
-    
-    dayCards.forEach((card, dayIndex) => {
-        const dayName = card.querySelector('.day-title-input').value.trim();
-        const exercises = card.querySelectorAll('.exercise-column');
-        
-        let dayExercisesHtml = "";
-        let dayState = [];
-        
-        exercises.forEach(ex => {
-            const name = ex.querySelector('.ex-name-input').value.trim();
-            const sets = ex.querySelector('.ex-sets').value.trim();
-            const reps = ex.querySelector('.ex-reps').value.trim();
-            const rest = ex.querySelector('.ex-rest').value.trim();
-            const rpe = ex.querySelector('.ex-rpe').value.trim();
-            const video = ex.querySelector('.video-url-input').value.trim();
-            
-            const hideRest = ex.querySelector('.ex-rest').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
-            const hideRpe = ex.querySelector('.ex-rpe').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
-            const hideVideo = ex.querySelector('.video-url-input').previousElementSibling.querySelector('.toggle-visibility').dataset.hidden === "true";
-            
-            dayState.push({ name, sets, reps, rest, rpe, video, hideRest, hideRpe, hideVideo });
-            
-            if(name) {
-                let videoButtonHtml = "";
-                if(video && !hideVideo) {
-                    videoButtonHtml = `<a class="btn-video" href="${video}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #ef4444; color: #fff; padding: 8px 12px; font-size: 13px; font-weight: bold; border-radius: 6px; text-decoration: none; margin-top: 10px;"><i class="fa-solid fa-play"></i> مشاهدة فيديو التكنيك 📺</a>`;
-                }
-
-                dayExercisesHtml += `
-                    <div class="exercise-column" style="background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 15px; box-sizing: border-box;">
-                        <div class="ex-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: bold; color: #fff; font-size: 16px;">
-                            <i class="fa-solid fa-circle-check" style="color: #facc15;"></i>
-                            <div class="ex-name">${name}</div>
-                        </div>
-                        <div class="ex-meta-info" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #a1a1aa;">
-                            <div class="ex-details"><b>الجولات:</b> <span style="color:#fff;">${sets || '--'}</span></div>
-                            <div class="ex-details"><b>التكرارات:</b> <span style="color:#fff;">${reps || '--'}</span></div>
-                            <div class="ex-details" style="${hideRest ? 'display:none;' : ''}"><b>الراحة:</b> <span style="color:#fff;">${rest || '--'}</span></div>
-                            <div class="ex-details" style="${hideRpe ? 'display:none;' : ''}"><b>الجهد RPE:</b> <span style="color:#fff;">${rpe || '--'}</span></div>
-                        </div>
-                        ${videoButtonHtml}
-                    </div>
-                `;
-            }
-        });
-        
-        stateArray.push({ dayName, exercises: dayState });
-        
-        htmlOutput += `
-            <div class="day-card" style="background: #121214; border: 1px solid #27272a; border-radius: 12px; padding: 25px; margin-bottom: 30px; border-top: 4px solid #facc15;">
-                <div class="day-title" style="font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #fff; border-bottom: 1px solid #27272a; padding-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-dumbbell" style="color:#facc15;"></i> ${dayName}
-                </div>
-                <div class="exercises-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-                    ${dayExercisesHtml || '<p style="color:#a1a1aa; font-size:14px; grid-column: 1/-1;">يوم راحة واستشفاء عضلاتي تام 💤</p>'}
-                </div>
-            </div>
-        `;
-    });
-    
-    const packet = {
-        weight: weight,
-        fat: fat,
-        globalNotes: globalNotes,
-        fullHtml: htmlOutput,
-        editorState: JSON.stringify(stateArray),
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    
-    db.collection("gym_schedules").doc(clientKey).set(packet)
-    .then(() => {
-        const status = document.getElementById('saveStatus');
-        status.style.display = "inline-flex";
-        loadTraineesList();
-        setTimeout(() => { status.style.display = "none"; }, 2000);
-    })
-    .catch(err => console.error(err));
-}
-
-function loadTraineeDataFromServer(clientKey) {
-    isSubmitting = true; 
-    const app = document.getElementById('scheduleBuilderApp');
-    app.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>جاري استدعاء الجدول التدريبي السحابي...</p>";
-    
-    db.collection("gym_schedules").doc(clientKey).get().then((doc) => {
-        if(doc.exists) {
+    db.collection("gym_schedules").doc(sourceId).get().then((doc) => {
+        if (doc.exists) {
             const data = doc.data();
-            document.getElementById('clientWeightInput').value = data.weight || "";
-            document.getElementById('clientFatInput').value = data.fat || "";
-            document.getElementById('globalNotesInput').value = data.globalNotes || "";
-            
+            // استدعاء البيانات وتعبئتها في الشاشة
             if(data.editorState) {
                 const parsedState = JSON.parse(data.editorState);
+                const app = document.getElementById('scheduleBuilderApp');
                 app.innerHTML = "";
                 parsedState.forEach((dayObj, dayIndex) => {
                     createDayCardElement(dayIndex, dayObj.dayName, dayObj.exercises);
                 });
+                alert("تم استيراد الجدول بنجاح! لا تنسَ الضغط على زر الحفظ.");
             }
         } else {
-            document.getElementById('clientWeightInput').value = "";
-            document.getElementById('clientFatInput').value = "";
-            document.getElementById('globalNotesInput').value = "";
-            app.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد جدول محفوظ للاعب ( ${clientKey} ) حتى الآن. اضغط على زر "+ هيكل سبعة أيام فارغ" للبدء في كتابة الجدول ثم اضغط حفظ.</p>`;
+            alert("المتدرب غير موجود!");
         }
-        isSubmitting = false;
-    }).catch(err => {
-        console.error(err);
-        isSubmitting = false;
     });
 }
+
+// (أبقِ باقي الدوال: executeSearch, saveDataToServer, createDayCardElement كما هي في الكود السابق)
 </script>
 </body>
 </html>
