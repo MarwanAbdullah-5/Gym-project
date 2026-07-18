@@ -69,12 +69,12 @@
             <span style="color: var(--text-muted);">أو اكتب معرف يدوي:</span>
             <input type="text" id="clientKeyInput" value="ahmed" placeholder="مثال: ahmed">
             
-            <!-- زر البحث والاستدعاء الجديد لمنع الكتابة الفوقية التلقائية -->
+            <!-- زر البحث والاستدعاء المطور لمنع المسح والتعارض -->
             <button class="btn" onclick="executeSearch()"><i class="fa-solid fa-magnifying-glass"></i> بحث واستدعاء الجدول 🔍</button>
         </div>
         
         <div>
-            <button class="btn btn-secondary" onclick="generateDefaultStructure()">إنشاء وحفظ الجدول ⚡</button>
+            <button class="btn btn-secondary" onclick="generateDefaultStructure()">إنشاء جدول جديد فارغ ⚡</button>
             <span id="saveStatus" style="margin-right: 15px; display: none;"><i class="fa-solid fa-cloud-arrow-up"></i> تم الحفظ تلقائياً!</span>
         </div>
 
@@ -119,13 +119,13 @@ const db = firebase.firestore();
 
 const daysOfWeek = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 let autoSaveTimeout;
-let isSubmitting = false; // لمنع الحفظ الذاتي أثناء الجلب
+let isSubmitting = false; // حماية تمنع الحفظ التلقائي أثناء عملية الاستدعاء
 
 // 1. تحميل قائمة المتدربين المسجلين فور فتح الصفحة
 window.addEventListener('DOMContentLoaded', () => {
     loadTraineesList();
     setupGlobalAutoSave();
-    executeSearch(); // استدعاء جدول الحساب الافتراضي "ahmed" فوراً عند الفتح
+    executeSearch(); // جلب بيانات الحساب الافتراضي عند فتح الصفحة مباشرة
 });
 
 function loadTraineesList() {
@@ -146,19 +146,21 @@ function selectTrainee(selectedKey) {
     document.getElementById('clientKeyInput').value = selectedKey;
 }
 
-// دالة البحث واستدعاء الجدول عند الضغط على الزر
+// تنفيذ البحث والتحميل الآمن
 function executeSearch() {
     const key = document.getElementById('clientKeyInput').value.trim();
     if(!key) {
-        alert("الرجاء اختيار أو كتابة اسم المتدرب أولاً!");
+        alert("الرجاء اختيار أو كتابة اسم المدرب/المتدرب أولاً!");
         return;
     }
     loadTraineeDataFromServer(key);
 }
 
-// 2. توليد الهيكل المبدئي للأيام السبعة
+// 2. توليد الهيكل المبدئي للأيام السبعة (عند الحاجة لإنشاء جدول جديد بالكامل من الصفر)
 function generateDefaultStructure() {
-    isSubmitting = true; // إيقاف مؤقت للحفظ
+    if(!confirm("هل أنت متأكد؟ هذا الزر سينشئ هيكل جديد فارغ للمتدرب الحالي.")) return;
+    
+    isSubmitting = true; 
     const app = document.getElementById('scheduleBuilderApp');
     app.innerHTML = "";
     
@@ -323,7 +325,7 @@ function saveDataToServer() {
 
 // 6. تحميل بيانات متدرب معين وإعادة بنائها بأمان تام بدون مسح
 function loadTraineeDataFromServer(clientKey) {
-    isSubmitting = true; // قفل الحفظ التلقائي مؤقتاً لحماية الجدول الحالي
+    isSubmitting = true; // تفعيل القفل لمنع حفظ الفراغات أثناء الجلب
     
     db.collection("gym_schedules").doc(clientKey).get().then((doc) => {
         if(doc.exists) {
@@ -355,14 +357,14 @@ function loadTraineeDataFromServer(clientKey) {
                     });
                 });
             }
-            // فتح القفل بعد انتهاء تحميل البيانات بنجاح
-            setTimeout(() => { isSubmitting = false; }, 500);
+            // فتح الحفظ التلقائي بعد استقرار البيانات المجلوبة تماماً
+            setTimeout(() => { isSubmitting = false; }, 600);
         } else {
             document.getElementById('clientWeightInput').value = "";
             document.getElementById('clientFatInput').value = "";
             document.getElementById('globalNotesInput').value = "";
-            document.getElementById('scheduleBuilderApp').innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد جدول محفوظ لهذا المعرف بعد. اضغط على زر "إنشاء وحفظ الجدول ⚡" للبدء في صياغة جدوله.</p>`;
-            setTimeout(() => { isSubmitting = false; }, 500);
+            document.getElementById('scheduleBuilderApp').innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد جدول محفوظ لهذا المعرف بعد. اضغط على زر "إنشاء جدول جديد فارغ ⚡" للبدء في صياغة جدوله.</p>`;
+            setTimeout(() => { isSubmitting = false; }, 600);
         }
     }).catch(err => {
         console.error("خطأ أثناء جلب بيانات المتدرب: ", err);
