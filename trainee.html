@@ -178,19 +178,21 @@ function renderTraineeSchedule(traineeKey) {
         if(doc.exists) {
             const data = doc.data();
             
+            // تحديث البيانات الوصفية (الوزن، الدهون، الملاحظات)
             document.getElementById('lblWeight').innerText = data.weight || "--";
             document.getElementById('lblFat').innerText = data.fat || "--";
             document.getElementById('lblNotes').innerHTML = data.globalNotes ? 
-                `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> <b>ملاحظة الكابتن العامة للمتدرب:</b> ${data.globalNotes}` : 
-                `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> لا توجد ملاحظات عامة مكتوبة حالياً.`;
+                `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> <b>ملاحظة الكابتن:</b> ${data.globalNotes}` : "";
             
-            if(data.fullHtml && data.fullHtml.trim() !== "") {
+            // التعديل الجوهري: عرض الـ HTML الجاهز بدلاً من محاولة بنائه بالكود
+            if(data.fullHtml) {
                 document.getElementById('scheduleDisplayApp').innerHTML = data.fullHtml;
             } else {
-                document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">المدرب لم يقم بإضافة تمارين في جدولك حتى الآن.</p>`;
+                document.getElementById('scheduleDisplayApp').innerHTML = `<p>لا يوجد جدول متاح حالياً.</p>`;
             }
         }
     });
+}
 }
 </script>
 </body>
