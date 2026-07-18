@@ -15,9 +15,9 @@
         
         /* شريط إدارة المتدربين والبحث */
         .manager-bar { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
-        .search-zone { display: flex; align-items: center; gap: 10px; flex-grow: 1; max-width: 600px; }
+        .search-zone { display: flex; align-items: center; gap: 10px; flex-grow: 1; flex-wrap: wrap; }
         .search-zone select, .search-zone input { background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px 15px; border-radius: 6px; font-size: 15px; font-family: inherit; }
-        .search-zone select { flex-grow: 1; cursor: pointer; }
+        .search-zone select { min-width: 200px; cursor: pointer; }
         .search-zone input { width: 140px; }
         .search-zone select:focus, .search-zone input:focus { border-color: var(--primary); outline: none; }
         
@@ -32,8 +32,6 @@
         .btn:hover { background: var(--primary-hover); }
         .btn-secondary { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
         .btn-secondary:hover { background: #3f3f46; }
-        .btn-danger { background: #ef4444; color: #fff; }
-        .btn-danger:hover { background: #dc2626; }
         
         #saveStatus { font-weight: bold; font-size: 14px; color: #4ade80; display: inline-flex; align-items: center; gap: 5px; }
         
@@ -66,10 +64,13 @@
         <div class="search-zone">
             <i class="fa-solid fa-user-check" style="color: var(--primary); font-size: 18px;"></i>
             <select id="traineeSelector" onchange="selectTrainee(this.value)">
-                <option value="">-- اختر متدرباً للتعديل أو البحث --</option>
+                <option value="">-- اختر متدرباً مسجلاً --</option>
             </select>
-            <span style="color: var(--text-muted);">أو اكتب معرف جديد:</span>
-            <input type="text" id="clientKeyInput" value="ahmed" placeholder="مثال: ahmed" oninput="syncManualKey(this.value)">
+            <span style="color: var(--text-muted);">أو اكتب معرف يدوي:</span>
+            <input type="text" id="clientKeyInput" value="ahmed" placeholder="مثال: ahmed">
+            
+            <!-- زر البحث والاستدعاء الجديد لمنع الكتابة الفوقية التلقائية -->
+            <button class="btn" onclick="executeSearch()"><i class="fa-solid fa-magnifying-glass"></i> بحث واستدعاء الجدول 🔍</button>
         </div>
         
         <div>
@@ -118,22 +119,19 @@ const db = firebase.firestore();
 
 const daysOfWeek = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 let autoSaveTimeout;
+let isSubmitting = false; // لمنع الحفظ الذاتي أثناء الجلب
 
 // 1. تحميل قائمة المتدربين المسجلين فور فتح الصفحة
 window.addEventListener('DOMContentLoaded', () => {
     loadTraineesList();
     setupGlobalAutoSave();
-    // جلب بيانات الحساب الافتراضي المكتوب في الخانة أولاً
-    loadTraineeDataFromServer(document.getElementById('clientKeyInput').value.trim());
+    executeSearch(); // استدعاء جدول الحساب الافتراضي "ahmed" فوراً عند الفتح
 });
 
-// دالة لجلب كل المتدربين الذين لديهم جداول محفوظة في السيرفر لتسهيل البحث واختيارهم
 function loadTraineesList() {
     db.collection("gym_schedules").get().then((querySnapshot) => {
         const selector = document.getElementById('traineeSelector');
-        // تفريغ القائمة باستثناء الخيار الأول
-        selector.innerHTML = '<option value="">-- اختر متدرباً للتعديل أو البحث --</option>';
-        
+        selector.innerHTML = '<option value="">-- اختر متدرباً مسجلاً --</option>';
         querySnapshot.forEach((doc) => {
             const option = document.createElement('option');
             option.value = doc.id;
@@ -143,20 +141,24 @@ function loadTraineesList() {
     }).catch(err => console.error("خطأ في جلب القائمة: ", err));
 }
 
-// دالة عند اختيار اسم من القائمة المنسدلة
 function selectTrainee(selectedKey) {
     if(!selectedKey) return;
     document.getElementById('clientKeyInput').value = selectedKey;
-    loadTraineeDataFromServer(selectedKey);
 }
 
-// دالة لمزامنة الخانة اليدوية مع النظام
-function syncManualKey(val) {
-    triggerAutoSave();
+// دالة البحث واستدعاء الجدول عند الضغط على الزر
+function executeSearch() {
+    const key = document.getElementById('clientKeyInput').value.trim();
+    if(!key) {
+        alert("الرجاء اختيار أو كتابة اسم المتدرب أولاً!");
+        return;
+    }
+    loadTraineeDataFromServer(key);
 }
 
 // 2. توليد الهيكل المبدئي للأيام السبعة
 function generateDefaultStructure() {
+    isSubmitting = true; // إيقاف مؤقت للحفظ
     const app = document.getElementById('scheduleBuilderApp');
     app.innerHTML = "";
     
@@ -173,17 +175,19 @@ function generateDefaultStructure() {
         `;
         app.appendChild(dayCard);
         
-        // إضافة 3 تمارين فارغة كبداية
         for(let i=0; i<3; i++) {
             addExerciseField(dayIndex, '', '', '', '', '', '');
         }
     });
+    isSubmitting = false;
     triggerAutoSave();
 }
 
 // 3. إضافة حقول تمرين داخل يوم معين
 function addExerciseField(dayIndex, name='', sets='', reps='', rest='', rpe='', video='') {
     const grid = document.getElementById(`grid-day-${dayIndex}`);
+    if(!grid) return;
+    
     const box = document.createElement('div');
     box.className = 'exercise-column';
     box.innerHTML = `
@@ -200,15 +204,14 @@ function addExerciseField(dayIndex, name='', sets='', reps='', rest='', rpe='', 
             <div class="field-box"><label>RPE (الجهد)</label><input type="text" class="ex-rpe" value="${rpe}" placeholder="8/10"></div>
         </div>
         <div class="field-box">
-            <label><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> رابط فيديو الشرح المساعد:</label>
+            <label><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> رابط فيديو الشرح:</label>
             <input type="url" class="video-url-input" value="${video}" placeholder="https://youtube.com/...">
             <a class="btn-video" href="${video || '#'}" target="_blank" style="display:${video ? 'flex' : 'none'}; margin-top:5px; background:#27272a; color:#fff; border:1px solid #3f3f46;">
-                <i class="fa-solid fa-play"></i> تجربة الرابط الحالي
+                <i class="fa-solid fa-play"></i> تجربة الرابط
             </a>
         </div>
     `;
     
-    // مراقبة المدخلات داخل مربع التمرين لتشغيل الحفظ التلقائي
     box.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', () => {
             if(input.classList.contains('video-url-input')) {
@@ -231,25 +234,27 @@ function setupGlobalAutoSave() {
 }
 
 function triggerAutoSave() {
+    if(isSubmitting) return;
     clearTimeout(autoSaveTimeout);
-    autoSaveTimeout = setTimeout(saveDataToServer, 1500); // حفظ تلقائي بعد ثانية ونصف من التوقف عن الكتابة
+    autoSaveTimeout = setTimeout(saveDataToServer, 1500); 
 }
 
 // 5. تجميع البيانات وحفظها السحابي في الفايربيس
 function saveDataToServer() {
+    if(isSubmitting) return;
     const clientKey = document.getElementById('clientKeyInput').value.trim();
     if (!clientKey) return;
+    
+    const dayCards = document.querySelectorAll('.day-card');
+    if(dayCards.length === 0) return;
     
     const weight = document.getElementById('clientWeightInput').value;
     const fat = document.getElementById('clientFatInput').value;
     const globalNotes = document.getElementById('globalNotesInput').value;
     
-    const dayCards = document.querySelectorAll('.day-card');
-    if(dayCards.length === 0) return;
-    
     let htmlOutput = "";
     let videoLinksArray = [];
-    let stateArray = []; // لحفظ قيم المدخلات من أجل إعادة تحميلها للكابتن لاحقاً
+    let stateArray = []; 
     
     dayCards.forEach((card, dayIndex) => {
         const dayName = card.dataset.dayName;
@@ -311,15 +316,14 @@ function saveDataToServer() {
         const status = document.getElementById('saveStatus');
         status.style.display = "inline-flex";
         setTimeout(() => { status.style.display = "none"; }, 2000);
-        // تحديث القائمة المنسدلة لضمان ظهور أي اسم جديد مباشرة
         loadTraineesList();
     })
     .catch(err => console.error("خطأ الحفظ السحابي: ", err));
 }
 
-// 6. تحميل بيانات متدرب معين وإعادة بنائها في لوحة الكابتن عند البحث أو الاختيار
+// 6. تحميل بيانات متدرب معين وإعادة بنائها بأمان تام بدون مسح
 function loadTraineeDataFromServer(clientKey) {
-    if(!clientKey) return;
+    isSubmitting = true; // قفل الحفظ التلقائي مؤقتاً لحماية الجدول الحالي
     
     db.collection("gym_schedules").doc(clientKey).get().then((doc) => {
         if(doc.exists) {
@@ -341,7 +345,7 @@ function loadTraineeDataFromServer(clientKey) {
                         <div class="day-title"><i class="fa-solid fa-calendar-day" style="color:var(--primary);"></i> يوم ${dayObj.dayName}</div>
                         <div class="exercises-grid" id="grid-day-${dayIndex}"></div>
                         <button class="btn btn-secondary" style="margin-top:15px; padding:6px 12px; font-size:12px;" onclick="addExerciseField(${dayIndex}, '', '', '', '', '', '')">
-                            <i class="fa-solid fa-plus"></i> إضافة تمين لهذا اليوم
+                            <i class="fa-solid fa-plus"></i> إضافة تمرين لهذا اليوم
                         </button>
                     `;
                     app.appendChild(dayCard);
@@ -351,14 +355,19 @@ function loadTraineeDataFromServer(clientKey) {
                     });
                 });
             }
+            // فتح القفل بعد انتهاء تحميل البيانات بنجاح
+            setTimeout(() => { isSubmitting = false; }, 500);
         } else {
-            // إذا كان المستخدم جديداً وليس لديه بيانات مخزنة
             document.getElementById('clientWeightInput').value = "";
             document.getElementById('clientFatInput').value = "";
             document.getElementById('globalNotesInput').value = "";
             document.getElementById('scheduleBuilderApp').innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد جدول محفوظ لهذا المعرف بعد. اضغط على زر "إنشاء وحفظ الجدول ⚡" للبدء في صياغة جدوله.</p>`;
+            setTimeout(() => { isSubmitting = false; }, 500);
         }
-    }).catch(err => console.error("خطأ أثناء جلب بيانات المتدرب: ", err));
+    }).catch(err => {
+        console.error("خطأ أثناء جلب بيانات المتدرب: ", err);
+        isSubmitting = false;
+    });
 }
 </script>
 </body>
