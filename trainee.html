@@ -22,21 +22,21 @@
         
         .section-title { text-align: center; font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
-        /* تصميم الأيام والتمارين المتوافق تماماً مع المدرب */
+        /* تنسيق كروت الأيام والتمارين */
         .day-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 30px; border-top: 4px solid var(--primary); }
-        .day-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .day-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         
         .exercise-column { background: #18181b; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
         .ex-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: bold; color: #fff; font-size: 16px; }
         .ex-meta-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: var(--text-muted); }
-        .ex-details b { color: var(--primary); }
+        .ex-details b { color: var(--text-muted); }
         .ex-details span { color: #fff; display: block; margin-top: 2px; }
         
         .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; background: #ef4444; color: #fff; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: 0.2s; }
         .btn-video:hover { background: #dc2626; }
         
-        .loading-msg { text-align: center; font-size: 16px; color: var(--text-muted); padding: 5px; }
+        .loading-msg { text-align: center; font-size: 16px; color: var(--text-muted); padding: 20px; }
     </style>
 </head>
 <body>
@@ -45,7 +45,7 @@
         <h1><i class="fa-solid fa-dumbbell"></i> خطتك التدريبية | تحت إشراف <span>كابتن مصطفى</span></h1>
         
         <div class="meta-display">
-            <div class="meta-badge"><i class="fa-solid fa-weight-scale" style="color:var(--primary)"></i> الوزن الحلي: <span id="lblWeight">--</span> كجم</div>
+            <div class="meta-badge"><i class="fa-solid fa-weight-scale" style="color:var(--primary)"></i> الوزن الحالي: <span id="lblWeight">--</span> كجم</div>
             <div class="meta-badge"><i class="fa-solid fa-percent" style="color:var(--primary)"></i> نسبة الدهون: <span id="lblFat">--</span> %</div>
         </div>
         
@@ -60,7 +60,7 @@
 
     <!-- حاوية عرض الجدول الديناميكي -->
     <div id="scheduleDisplayApp">
-        <p class="loading-msg">جاري استدعاء آخر جدول تمارين من السيرفر المزامن...</p>
+        <p class="loading-msg">جاري استدعاء الجدول التدريبي المحدث...</p>
     </div>
 </div>
 
@@ -82,8 +82,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// دالة ذكية لمعرفة اسم المتدرب تلقائياً من الرابط (مثال: trainee.html?id=mostafa) 
-// وإذا لم يجد اسم في الرابط، سيقوم بجلب بيانات الحساب الافتراضي "mostafa" تلقائياً لحل المشكلة فوراً.
 function getClientKey() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id') || "mostafa"; 
@@ -99,31 +97,21 @@ function loadTraineeData(clientKey) {
         if(doc.exists) {
             const data = doc.data();
             
-            // 1. تحديث الأوزان والملاحظات العامة في الأعلى
+            // 1. تحديث الأوزان والملاحظات في الأعلى
             document.getElementById('lblWeight').innerText = data.weight || "--";
             document.getElementById('lblFat').innerText = data.fat || "--";
             document.getElementById('lblNotes').innerHTML = data.globalNotes ? 
                 `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> <b>ملاحظة الكابتن العامة للمتدرب:</b> ${data.globalNotes}` : 
                 `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> لا توجد ملاحظات عامة مكتوبة حالياً.`;
             
-            // 2. عرض الجدول والتمارين كما صممها المدرب بالملي
+            // 2. قراءة الـ fullHtml وعرضه مباشرة للمتدرب
             if(data.fullHtml && data.fullHtml.trim() !== "") {
                 document.getElementById('scheduleDisplayApp').innerHTML = data.fullHtml;
-                
-                // تفعيل وعرض أزرار الفيديو إذا كانت موجودة
-                document.querySelectorAll('#scheduleDisplayApp .btn-video').forEach(btn => {
-                    if (btn.getAttribute('href') && btn.getAttribute('href') !== "#" && btn.getAttribute('href').trim() !== "") {
-                        btn.style.display = "flex"; 
-                    } else {
-                        btn.style.removeProperty('display');
-                        btn.style.display = "none";
-                    }
-                });
             } else {
                 document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">المدرب لم يقم بإضافة تمارين في جدولك حتى الآن.</p>`;
             }
         } else {
-            document.getElementById('lblNotes').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i> لم يتم العثور على اسم متدرب بهذا المعرف في السيرفر.`;
+            document.getElementById('lblNotes').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i> لم يتم العثور على اسم متدرب بهذا المعرف.`;
             document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">لا توجد خطة تدريبية محفوظة باسم ( ${clientKey} )، يرجى مراجعة الكابتن مصطفى لتفعيل حسابك.</p>`;
         }
     }).catch(err => {
