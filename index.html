@@ -2,76 +2,94 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم الكابتن مروان</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- (باقي الـ CSS كما هو في الكود السابق لضمان تطابق الشكل) -->
     <style>
-        :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #0b0b0c; --card-bg: #121214; --border-color: #27272a; --text-main: #ffffff; --text-muted: #a1a1aa; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); margin: 0; padding: 20px; color: var(--text-main); }
-        .container { max-width: 1300px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .manager-bar { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
-        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .btn-save { background: #22c55e; color: #fff; padding: 12px 25px; }
-        .import-box { background: #18181b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed var(--primary); }
+        :root { --primary: #facc15; --dark-bg: #0b0b0c; --card-bg: #121214; --border-color: #27272a; --text-main: #ffffff; }
+        body { font-family: sans-serif; background-color: var(--dark-bg); color: var(--text-main); padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        .box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; }
+        button { cursor: pointer; padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; }
+        .btn-save { background: #22c55e; color: white; }
+        .btn-import { background: #2563eb; color: white; }
     </style>
 </head>
 <body>
 <div class="container">
-    <header><h1>لوحة التحكم المتقدمة | <span>الكابتن مروان</span></h1></header>
-
-    <div class="manager-bar">
-        <input type="text" id="clientKeyInput" placeholder="اسم المتدرب" style="padding:10px; border-radius:6px;">
-        <button class="btn" onclick="executeSearch()">بحث واستدعاء</button>
-        <button class="btn btn-save" onclick="saveDataToServer()">حفظ وتحديث الجدول 💾</button>
+    <div class="box">
+        <h1>لوحة تحكم الكابتن مروان</h1>
+        <input type="text" id="clientKeyInput" placeholder="اسم المتدرب (المعرف)">
+        <button onclick="executeSearch()" style="background:var(--primary);">بحث واستدعاء</button>
+        <button class="btn-save" onclick="saveDataToServer()">حفظ وتحديث الجدول 💾</button>
     </div>
 
-    <!-- منطقة الاستيراد الجديدة -->
-    <div class="import-box">
-        <h3 style="margin-top:0; color:var(--primary);">استيراد جدول من متدرب آخر 📋</h3>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="importFromId" placeholder="اسم المتدرب المراد النسخ منه..." style="flex:1; padding:10px; border-radius:6px; background:#000; color:#fff; border:1px solid #3f3f46;">
-            <button onclick="importSchedule()" style="background:#2563eb; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">استيراد</button>
-        </div>
+    <div class="box">
+        <h3>استيراد جدول من متدرب آخر 📋</h3>
+        <input type="text" id="importFromId" placeholder="اكتب اسم المتدرب القديم للنسخ منه...">
+        <button class="btn-import" onclick="importSchedule()">استيراد الجدول</button>
     </div>
 
-    <div id="scheduleBuilderApp"></div>
+    <div class="box">
+        <label>الوزن:</label><input type="text" id="weightInput">
+        <label>نسبة الدهون:</label><input type="text" id="fatInput">
+        <label>ملاحظات عامة:</label><textarea id="notesInput"></textarea>
+        <label>كود الجدول (HTML):</label><textarea id="fullHtmlInput" rows="10"></textarea>
+    </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script>
-// (ضع إعدادات الفايربيس FirebaseConfig الخاصة بك هنا كما كانت في الكود السابق)
-const firebaseConfig = { /* ... نفس الإعدادات السابقة ... */ };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
+        authDomain: "gym-training-by-mostafa.firebaseapp.com",
+        projectId: "gym-training-by-mostafa",
+        storageBucket: "gym-training-by-mostafa.firebasestorage.app",
+        messagingSenderId: "397520948690",
+        appId: "1:397520948690:web:db7c3fe301984ff96f8c0b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-// دالة الاستيراد الجديدة
-function importSchedule() {
-    const sourceId = document.getElementById('importFromId').value.trim().toLowerCase();
-    if (!sourceId) { alert("اكتب اسم المتدرب القديم!"); return; }
+    function executeSearch() {
+        const key = document.getElementById('clientKeyInput').value.trim().toLowerCase();
+        db.collection("gym_schedules").doc(key).get().then(doc => {
+            if(doc.exists) {
+                const d = doc.data();
+                document.getElementById('weightInput').value = d.weight || "";
+                document.getElementById('fatInput').value = d.fat || "";
+                document.getElementById('notesInput').value = d.globalNotes || "";
+                document.getElementById('fullHtmlInput').value = d.fullHtml || "";
+                alert("تم تحميل بيانات المتدرب");
+            } else { alert("المتدرب غير موجود، يمكنك البدء بكتابة بياناته الآن."); }
+        });
+    }
 
-    db.collection("gym_schedules").doc(sourceId).get().then((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            // استدعاء البيانات وتعبئتها في الشاشة
-            if(data.editorState) {
-                const parsedState = JSON.parse(data.editorState);
-                const app = document.getElementById('scheduleBuilderApp');
-                app.innerHTML = "";
-                parsedState.forEach((dayObj, dayIndex) => {
-                    createDayCardElement(dayIndex, dayObj.dayName, dayObj.exercises);
-                });
-                alert("تم استيراد الجدول بنجاح! لا تنسَ الضغط على زر الحفظ.");
-            }
-        } else {
-            alert("المتدرب غير موجود!");
-        }
-    });
-}
+    function saveDataToServer() {
+        const key = document.getElementById('clientKeyInput').value.trim().toLowerCase();
+        if(!key) return alert("اكتب اسم المتدرب أولاً!");
+        db.collection("gym_schedules").doc(key).set({
+            weight: document.getElementById('weightInput').value,
+            fat: document.getElementById('fatInput').value,
+            globalNotes: document.getElementById('notesInput').value,
+            fullHtml: document.getElementById('fullHtmlInput').value
+        }).then(() => alert("تم حفظ الجدول بنجاح يا كابتن مروان!"));
+    }
 
-// (أبقِ باقي الدوال: executeSearch, saveDataToServer, createDayCardElement كما هي في الكود السابق)
+    function importSchedule() {
+        const sourceId = document.getElementById('importFromId').value.trim().toLowerCase();
+        db.collection("gym_schedules").doc(sourceId).get().then(doc => {
+            if(doc.exists) {
+                const d = doc.data();
+                document.getElementById('weightInput').value = d.weight || "";
+                document.getElementById('fatInput').value = d.fat || "";
+                document.getElementById('notesInput').value = d.globalNotes || "";
+                document.getElementById('fullHtmlInput').value = d.fullHtml || "";
+                alert("تم جلب بيانات " + sourceId + " بنجاح!");
+            } else { alert("المتدرب المصدر غير موجود."); }
+        });
+    }
 </script>
 </body>
 </html>
