@@ -10,7 +10,6 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); margin: 0; padding: 20px; color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 90vh; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; display: none; }
         
-        /* شاشة تسجيل الدخول */
         .login-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 35px; max-width: 400px; width: 100%; margin: 0 auto; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-top: 4px solid var(--primary); }
         .login-card h2 { margin: 0 0 10px 0; font-size: 24px; font-weight: 900; }
         .login-card h2 span { color: var(--primary); }
@@ -24,7 +23,6 @@
         .btn-login:hover { background: var(--primary-hover); }
         .error-msg { color: #ef4444; font-size: 13px; margin-top: 10px; display: none; font-weight: bold; }
 
-        /* تنسيق جدول التمارين بعد الدخول */
         header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
         header h1 { font-size: 26px; font-weight: 900; margin: 0 0 15px 0; }
         header h1 span { color: var(--primary); }
@@ -43,10 +41,8 @@
         
         .exercise-column { background: #18181b; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; text-align: right; }
         .ex-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: bold; color: #fff; font-size: 16px; }
-        .ex-meta-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: var(--text-muted); }
         .ex-details b { color: var(--text-muted); }
         .ex-details span { color: #fff; display: block; margin-top: 2px; }
-        
         .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; background: #ef4444; color: #fff; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: 0.2s; }
         .btn-video:hover { background: #dc2626; }
         .loading-msg { text-align: center; font-size: 16px; color: var(--text-muted); padding: 20px; }
@@ -54,7 +50,6 @@
 </head>
 <body>
 
-<!-- شاشة تسجيل الدخول -->
 <div class="login-card" id="loginBox">
     <h2>بوابة المتدربين | <span>كابتن مصطفى</span></h2>
     <p>يرجى إدخال بيانات حسابك المخصص لعرض جدولك التدريبي المحدث</p>
@@ -66,7 +61,7 @@
     </div>
     
     <div class="input-group">
-        <label>كلمة运行ة المرور:</label>
+        <label>كلمة المرور:</label>
         <i class="fa-solid fa-lock"></i>
         <input type="password" id="txtPassword" placeholder="••••••••">
     </div>
@@ -75,7 +70,6 @@
     <div class="error-msg" id="loginError">❌ اسم المستخدم أو كلمة المرور غير صحيحة!</div>
 </div>
 
-<!-- واجهة عرض الجدول بعد تسجيل الدخول الناجح -->
 <div class="container" id="traineeDashboard">
     <header>
         <button class="btn-logout" onclick="handleTraineeLogout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -98,7 +92,6 @@
     </div>
 </div>
 
-<!-- اتصال الفايربيس السحابي -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -118,11 +111,9 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-// فحص الجلسة المستمرة فور تحميل الصفحة تلقائياً
 window.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('activeTraineeUser');
     if (savedUser) {
-        // إذا وجد مستخدم مسجل مسبقاً، يتخطى شاشة الدخول ويعرض الجدول فوراً
         showDashboardView(savedUser);
     }
 });
@@ -141,23 +132,17 @@ function handleTraineeLogin() {
     db.collection("gym_schedules").doc(user).get().then((doc) => {
         if(doc.exists) {
             const expectedPassword = user + "2026"; 
-            
             if(pass === expectedPassword || pass === "123456") { 
-                // حفظ الجلسة في ذاكرة المتصفح للأبد
                 localStorage.setItem('activeTraineeUser', user);
                 showDashboardView(user);
             } else {
-                errorEl.innerText = "❌ كلمة المرور غير صحيحة لهذا المتدرب!";
+                errorEl.innerText = "❌ كلمة المرور غير صحيحة!";
                 errorEl.style.display = "block";
             }
         } else {
-            errorEl.innerText = "❌ اسم المتدرب غير مسجل في النظام!";
+            errorEl.innerText = "❌ اسم المتدرب غير مسجل!";
             errorEl.style.display = "block";
         }
-    }).catch(err => {
-        console.error(err);
-        errorEl.innerText = "❌ فشل الاتصال بالسيرفر، حاول مجدداً.";
-        errorEl.style.display = "block";
     });
 }
 
@@ -168,7 +153,6 @@ function showDashboardView(username) {
 }
 
 function handleTraineeLogout() {
-    // مسح الجلسة تماماً وإعادة المتدرب لشاشة الدخول
     localStorage.removeItem('activeTraineeUser');
     window.location.reload();
 }
@@ -177,14 +161,11 @@ function renderTraineeSchedule(traineeKey) {
     db.collection("gym_schedules").doc(traineeKey).onSnapshot((doc) => {
         if(doc.exists) {
             const data = doc.data();
-            
-            // تحديث البيانات الوصفية (الوزن، الدهون، الملاحظات)
             document.getElementById('lblWeight').innerText = data.weight || "--";
             document.getElementById('lblFat').innerText = data.fat || "--";
             document.getElementById('lblNotes').innerHTML = data.globalNotes ? 
                 `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> <b>ملاحظة الكابتن:</b> ${data.globalNotes}` : "";
             
-            // التعديل الجوهري: عرض الـ HTML الجاهز بدلاً من محاولة بنائه بالكود
             if(data.fullHtml) {
                 document.getElementById('scheduleDisplayApp').innerHTML = data.fullHtml;
             } else {
@@ -192,7 +173,6 @@ function renderTraineeSchedule(traineeKey) {
             }
         }
     });
-}
 }
 </script>
 </body>
