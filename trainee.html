@@ -124,22 +124,23 @@ function login() {
 }
 
 function loadTraineeWorkout(name) {
-    db.collection("gym_schedules").doc(name).get().then((doc) => {
+    // تفعيل خاصية الاستماع اللحظي للتحديثات بدون الحاجة لتحديث الصفحة
+    db.collection("gym_schedules").doc(name).onSnapshot((doc) => {
         if (doc.exists) {
             const data = doc.data();
-            // وضع البيانات الإحصائية للكابتن
+            // تحديث البيانات الإحصائية فوراً
             document.getElementById('clientWeight').innerText = data.weight || "--";
             document.getElementById('clientFat').innerText = data.fat || "--";
             document.getElementById('captainGlobalNotes').innerText = data.globalNotes || "لا توجد ملاحظات عامة.";
             
-            // حقن الهيكل والتصميم الرائع للتمارين
+            // تحديث هيكل التمارين والتصميم تلقائياً
             document.getElementById('scheduleAppContainer').innerHTML = data.fullHtml || "";
             
-            // إخفاء خانات وروابط إدخال المدرس وجعل أزرار الفيديو تعمل مباشرة للمتدرب
+            // ضبط أزرار الفيديو وإخفاء خانات الإدخال للمتدرب
             const inputs = document.querySelectorAll('.video-url-input');
             const deleteButtons = document.querySelectorAll('.btn-delete-exercise');
             
-            deleteButtons.forEach(btn => btn.remove()); // إخفاء أزرار الحذف للمتدرب
+            deleteButtons.forEach(btn => btn.remove());
             
             if (data.videoLinks) {
                 const savedValues = JSON.parse(data.videoLinks);
@@ -149,15 +150,16 @@ function loadTraineeWorkout(name) {
                         btnVideo.href = savedValues[index];
                         btnVideo.style.display = "flex";
                     }
-                    input.style.display = "none"; // إخفاء صندوق الإدخال حتى يبقى المظهر نظيفاً للمتدرب
+                    input.style.display = "none";
                 });
             }
         } else {
             document.getElementById('scheduleAppContainer').innerHTML = `<h3 style="text-align:center; color:var(--primary);">لم يقم الكابتن مصطفى بإضافة جدول تدريبي لك بعد! 🏋️‍♂️</h3>`;
         }
-    }).catch((error) => {
-        console.error("Error fetching data: ", error);
+    }, (error) => {
+        console.error("حدث خطأ أثناء الاستماع للتحديثات اللحظية: ", error);
     });
+}
 }
 </script>
 </body>
