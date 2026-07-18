@@ -22,7 +22,7 @@
         
         .section-title { text-align: center; font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
-        /* تنسيق كروت الأيام والتمارين */
+        /* تنسيق الأيام والتمارين المباشر */
         .day-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 30px; border-top: 4px solid var(--primary); }
         .day-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -50,7 +50,7 @@
         </div>
         
         <div class="global-notes" id="lblNotes">
-            <i class="fa-solid fa-thumbtack" style="color:var(--primary)"></i> جاري تحميل توجيهات الكابتن...
+            <i class="fa-solid fa-thumbtack" style="color:var(--primary)"></i> جاري قراءة بيانات الكابتن...
         </div>
     </header>
 
@@ -58,13 +58,12 @@
         <i class="fa-solid fa-clipboard-list" style="color:var(--primary)"></i> الخطة التدريبية المخصصة
     </div>
 
-    <!-- حاوية عرض الجدول الديناميكي -->
     <div id="scheduleDisplayApp">
-        <p class="loading-msg">جاري استدعاء الجدول التدريبي المحدث...</p>
+        <p class="loading-msg">جاري تحميل الجدول التدريبي المحدث...</p>
     </div>
 </div>
 
-<!-- مكتبات الفايربيس السحابية -->
+<!-- اتصال الفايربيس المستقر -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -79,7 +78,10 @@ const firebaseConfig = {
     measurementId: "G-EWZEGSFP99"
 };
 
-firebase.initializeApp(firebaseConfig);
+// تشغيل الفايربيس بأمان وتجنب تعارض الـ Auth
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 
 function getClientKey() {
@@ -89,36 +91,32 @@ function getClientKey() {
 
 window.addEventListener('DOMContentLoaded', () => {
     const traineeKey = getClientKey();
-    loadTraineeData(traineeKey);
-});
-
-function loadTraineeData(clientKey) {
-    db.collection("gym_schedules").doc(clientKey).get().then((doc) => {
+    
+    // جلب البيانات مع ميزة المزامنة اللحظية الحية لتجنب أي مشاكل كاش
+    db.collection("gym_schedules").doc(traineeKey).onSnapshot((doc) => {
         if(doc.exists) {
             const data = doc.data();
             
-            // 1. تحديث الأوزان والملاحظات في الأعلى
             document.getElementById('lblWeight').innerText = data.weight || "--";
             document.getElementById('lblFat').innerText = data.fat || "--";
             document.getElementById('lblNotes').innerHTML = data.globalNotes ? 
                 `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> <b>ملاحظة الكابتن العامة للمتدرب:</b> ${data.globalNotes}` : 
                 `<i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> لا توجد ملاحظات عامة مكتوبة حالياً.`;
             
-            // 2. قراءة الـ fullHtml وعرضه مباشرة للمتدرب
             if(data.fullHtml && data.fullHtml.trim() !== "") {
                 document.getElementById('scheduleDisplayApp').innerHTML = data.fullHtml;
             } else {
                 document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">المدرب لم يقم بإضافة تمارين في جدولك حتى الآن.</p>`;
             }
         } else {
-            document.getElementById('lblNotes').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i> لم يتم العثور على اسم متدرب بهذا المعرف.`;
-            document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">لا توجد خطة تدريبية محفوظة باسم ( ${clientKey} )، يرجى مراجعة الكابتن مصطفى لتفعيل حسابك.</p>`;
+            document.getElementById('lblNotes').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i> حساب غير مفعل.`;
+            document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg">لا توجد خطة تدريبية محفوظة باسم ( ${traineeKey} )، يرجى مراجعة كابتن مصطفى.</p>`;
         }
-    }).catch(err => {
-        console.error("حدث خطأ في جلب البيانات: ", err);
-        document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg" style="color:#ef4444;">حدث خطأ أثناء الاتصال بالسيرفر السحابي.</p>`;
+    }, (err) => {
+        console.error("خطأ اتصال: ", err);
+        document.getElementById('scheduleDisplayApp').innerHTML = `<p class="loading-msg" style="color:#ef4444;">عذراً، فشل الاتصال بقاعدة البيانات. تأكد من اتصال الإنترنت.</p>`;
     });
-}
+});
 </script>
 </body>
 </html>
