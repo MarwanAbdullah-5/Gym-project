@@ -25,9 +25,12 @@
         .error-msg { color: #ef4444; font-size: 13px; margin-top: 10px; display: none; font-weight: bold; }
 
         /* تنسيق جدول التمارين بعد الدخول */
-        header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); }
+        header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
         header h1 { font-size: 26px; font-weight: 900; margin: 0 0 15px 0; }
         header h1 span { color: var(--primary); }
+        .btn-logout { position: absolute; left: 20px; top: 20px; background: #27272a; color: #ef4444; border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-logout:hover { background: #ef4444; color: #fff; }
+        
         .meta-display { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
         .meta-badge { background: #000; border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 30px; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
         .meta-badge span { color: var(--primary); }
@@ -63,7 +66,7 @@
     </div>
     
     <div class="input-group">
-        <label>كلمة المرور:</label>
+        <label>كلمة运行ة المرور:</label>
         <i class="fa-solid fa-lock"></i>
         <input type="password" id="txtPassword" placeholder="••••••••">
     </div>
@@ -75,6 +78,7 @@
 <!-- واجهة عرض الجدول بعد تسجيل الدخول الناجح -->
 <div class="container" id="traineeDashboard">
     <header>
+        <button class="btn-logout" onclick="handleTraineeLogout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
         <h1><i class="fa-solid fa-dumbbell"></i> خطتك التدريبية | تحت إشراف <span>كابتن مصطفى</span></h1>
         <div class="meta-display">
             <div class="meta-badge"><i class="fa-solid fa-weight-scale" style="color:var(--primary)"></i> الوزن الحالي: <span id="lblWeight">--</span> كجم</div>
@@ -114,7 +118,15 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-// دالة تسجيل الدخول
+// فحص الجلسة المستمرة فور تحميل الصفحة تلقائياً
+window.addEventListener('DOMContentLoaded', () => {
+    const savedUser = localStorage.getItem('activeTraineeUser');
+    if (savedUser) {
+        // إذا وجد مستخدم مسجل مسبقاً، يتخطى شاشة الدخول ويعرض الجدول فوراً
+        showDashboardView(savedUser);
+    }
+});
+
 function handleTraineeLogin() {
     const user = document.getElementById('txtUsername').value.trim().toLowerCase();
     const pass = document.getElementById('txtPassword').value.trim();
@@ -126,21 +138,14 @@ function handleTraineeLogin() {
         return;
     }
 
-    // التحقق من الحساب داخل قاعدة البيانات
     db.collection("gym_schedules").doc(user).get().then((doc) => {
         if(doc.exists) {
-            // كلمة المرور الافتراضية لكل لاعب هي اسمه متبوعاً بـ 2026 (مثل: mostafa2026) 
-            // ويمكنك تعديل هذا الشرط أو كلمة المرور كما تحب.
             const expectedPassword = user + "2026"; 
             
             if(pass === expectedPassword || pass === "123456") { 
-                // إخفاء صندوق الدخول وإظهار لوحة المتدرب
-                document.getElementById('loginBox').style.display = "none";
-                document.body.style.display = "block"; // تغيير الاستايل ليتناسب مع العرض الكامل
-                document.getElementById('traineeDashboard').style.display = "block";
-                
-                // تحميل الجدول
-                renderTraineeSchedule(user);
+                // حفظ الجلسة في ذاكرة المتصفح للأبد
+                localStorage.setItem('activeTraineeUser', user);
+                showDashboardView(user);
             } else {
                 errorEl.innerText = "❌ كلمة المرور غير صحيحة لهذا المتدرب!";
                 errorEl.style.display = "block";
@@ -154,6 +159,18 @@ function handleTraineeLogin() {
         errorEl.innerText = "❌ فشل الاتصال بالسيرفر، حاول مجدداً.";
         errorEl.style.display = "block";
     });
+}
+
+function showDashboardView(username) {
+    document.getElementById('loginBox').style.display = "none";
+    document.getElementById('traineeDashboard').style.display = "block";
+    renderTraineeSchedule(username);
+}
+
+function handleTraineeLogout() {
+    // مسح الجلسة تماماً وإعادة المتدرب لشاشة الدخول
+    localStorage.removeItem('activeTraineeUser');
+    window.location.reload();
 }
 
 function renderTraineeSchedule(traineeKey) {
