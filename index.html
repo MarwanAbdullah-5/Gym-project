@@ -3,66 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شاشة المدرب - كابتن مصطفى</title>
+    <title>لوحة تحكم المدرب الذكية - كابتن مصطفى</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #000000; --card-bg: rgba(15, 15, 15, 0.88); --text-main: #ffffff; --text-muted: #a1a1aa; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.92)), url('https://unsplash.com'); background-size: cover; background-position: center top; background-attachment: fixed; margin: 0; padding: 20px; color: var(--text-main); }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; background: rgba(20, 20, 20, 0.6); padding: 25px; border-radius: 12px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        header h1 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+        :root { --primary: #facc15; --primary-hover: #eab308; --dark-bg: #0b0b0c; --card-bg: #121214; --border-color: #27272a; --text-main: #ffffff; --text-muted: #a1a1aa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); margin: 0; padding: 20px; color: var(--text-main); }
+        .container { max-width: 1300px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
+        header h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; }
         header h1 span { color: var(--primary); }
-        .header-meta-box { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 15px; }
-        .captain-global-notes { background: rgba(20, 20, 22, 0.9); border-right: 4px solid var(--primary); padding: 12px 20px; border-radius: 6px; font-size: 14px; max-width: 600px; width: 100%; box-sizing: border-box; text-align: right; }
-        .stats-badge-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .stats-badge { background: rgba(250, 204, 21, 0.1); border: 1px solid var(--primary); padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        .stats-badge span[contenteditable="true"] { color: var(--primary); padding: 0 4px; }
-        .trainer-control-panel { background: var(--card-bg); border-radius: 16px; padding: 25px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        .form-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
-        .form-group label { font-size: 14px; font-weight: 600; color: var(--text-muted); }
-        .form-group input, .form-group select { background: #000; border: 1px solid #222; color: white; padding: 12px; border-radius: 8px; font-family: inherit; }
-        .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
-        .btn-action { background: var(--primary); color: #000; border: none; padding: 12px 28px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .day-card { background: var(--card-bg); border-radius: 16px; padding: 30px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; backdrop-filter: blur(10px); border-top: 6px solid var(--primary); }
-        .day-title { font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
-        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .exercise-column { background: #121214; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-        .exercise-column:hover { border-color: var(--primary); transform: translateY(-4px); }
-        .btn-delete-exercise { position: absolute; top: 15px; left: 15px; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 5px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .ex-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-left: 25px; }
-        .ex-header i { color: var(--primary); font-size: 16px; }
-        .ex-name { font-weight: bold; font-size: 18px; color: #fff; width: 100%; border-bottom: 1px solid #27272a; padding-bottom: 5px; }
-        .ex-meta-info { background: rgba(0, 0, 0, 0.5); padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.03); }
-        .ex-details { font-size: 14px; margin-bottom: 8px; color: var(--text-muted); display: flex; justify-content: space-between; }
-        .ex-details b { color: var(--primary); }
-        .ex-details span { color: #fff; font-weight: 600; }
-        .ex-notes { font-size: 13px; color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 6px; border-right: 3px solid var(--primary); margin-bottom: 15px; min-height: 40px; font-style: italic; }
-        .video-url-input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 8px; font-size: 12px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-video { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background-color: var(--primary); color: #000; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: bold; }
-        [contenteditable="true"]:focus { outline: 2px solid var(--primary); background: #27272a; border-radius: 4px; padding: 2px 6px; }
-        #saveStatus { color: var(--primary); font-weight: bold; margin-top: 10px; text-align: center; }
+        
+        /* شريط إدارة المتدربين والبحث */
+        .manager-bar { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+        .search-zone { display: flex; align-items: center; gap: 10px; flex-grow: 1; max-width: 600px; }
+        .search-zone select, .search-zone input { background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px 15px; border-radius: 6px; font-size: 15px; font-family: inherit; }
+        .search-zone select { flex-grow: 1; cursor: pointer; }
+        .search-zone input { width: 140px; }
+        .search-zone select:focus, .search-zone input:focus { border-color: var(--primary); outline: none; }
+        
+        .meta-inputs { display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color); width: 100%; margin-top: 15px; }
+        .meta-group { display: flex; align-items: center; gap: 8px; }
+        .meta-group label { font-size: 14px; color: var(--text-muted); font-weight: bold; }
+        .meta-group input { background: #000; border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 6px; width: 90px; text-align: center; }
+        .meta-group.notes-group { flex-grow: 1; }
+        .meta-group.notes-group input { width: 100%; text-align: right; }
+
+        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:hover { background: var(--primary-hover); }
+        .btn-secondary { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
+        .btn-secondary:hover { background: #3f3f46; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+        
+        #saveStatus { font-weight: bold; font-size: 14px; color: #4ade80; display: inline-flex; align-items: center; gap: 5px; }
+        
+        /* هيكل الأيام والتمارين */
+        .day-card { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border-color); border-top: 4px solid var(--primary); }
+        .day-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .exercise-column { background: #18181b; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; position: relative; }
+        .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .ex-name-input { background: transparent; border: none; border-bottom: 1px solid #3f3f46; color: #fff; font-size: 16px; font-weight: bold; padding: 5px 0; width: 85%; }
+        .ex-name-input:focus { border-color: var(--primary); outline: none; }
+        .btn-delete-exercise { background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 16px; }
+        .ex-details-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .field-box { display: flex; flex-direction: column; gap: 4px; }
+        .field-box label { font-size: 12px; color: var(--text-muted); }
+        .field-box input { background: #000; border: 1px solid #3f3f46; color: #fff; padding: 6px; border-radius: 4px; font-size: 13px; }
+        .field-box input:focus { border-color: var(--primary); outline: none; }
+        .video-url-input { background: #000; border: 1px solid #3f3f46; color: #fff; padding: 8px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; margin-top: 5px; }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
-        <h1><i class="fa-solid fa-user-gear"></i> لوحة تحكم المدرب - <span>كابتن مصطفى</span></h1>
-        <div class="header-meta-box">
-            <div class="stats-badge-container">
-                <div class="stats-badge"><i class="fa-solid fa-weight-scale"></i> الوزن الحالي: <span contenteditable="true" id="clientWeight" onblur="saveAllData()">85</span> كجم</div>
-                <div class="stats-badge"><i class="fa-solid fa-percent"></i> نسبة الدهون: <span contenteditable="true" id="clientFat" onblur="saveAllData()">15</span> %</div>
-            </div>
-            <div class="captain-global-notes" contenteditable="true" id="captainGlobalNotes" onblur="saveAllData()">💡 ملاحظة الكابتن العامة للمتدرب: يرجى الالتزام التام بجدول النوم وشرب ما لا يقل عن 4 لتر ماء يومياً.</div>
-        </div>
+        <h1>🚀 لوحة المدرب المتقدمة | تحت إشراف <span>كابتن مصطفى</span></h1>
+        <p style="color: var(--text-muted); margin: 5px 0 0 0;">إدارة الجداول، تعديل البيانات، والمزامنة السحابية اللحظية التلقائية</p>
     </header>
-    <div class="trainer-control-panel">
-        <div class="form-group"><label>معرف المتدرب البطل (بالإنجليزي للتسجيل، مثلاً ahmed):</label><input type="text" id="clientName" value="ahmed"></div>
-        <div class="form-group"><label>عدد الأيام التدريبية (حتى 7):</label><select id="daysCount"><option value="2">جزءان</option><option value="3">3 أيام</option><option value="4" selected>4 أيام</option><option value="5">5 أيام</option><option value="6">6 أيام</option><option value="7">7 أيام</option></select></div>
-        <div class="form-group"><label>عدد التمارين المبدئي (حتى 10):</label><select id="exercisesCount"><option value="3">3 تمارين</option><option value="4" selected>4 تمارين</option><option value="5">5 تمارين</option><option value="6">6 تمارين</option><option value="7">7 تمارين</option><option value="8">8 تمارين</option><option value="9">9 تمارين</option><option value="10">10 تمارين كاملة</option></select></div>
-        <button class="btn-action" onclick="buildNewSchedule()"><i class="fa-solid fa-bolt"></i> توليد الهيكل المبدئي ⚡</button>
+
+    <!-- شريط البحث والتحكم في المتدربين -->
+    <div class="manager-bar">
+        <div class="search-zone">
+            <i class="fa-solid fa-user-check" style="color: var(--primary); font-size: 18px;"></i>
+            <select id="traineeSelector" onchange="selectTrainee(this.value)">
+                <option value="">-- اختر متدرباً للتعديل أو البحث --</option>
+            </select>
+            <span style="color: var(--text-muted);">أو اكتب معرف جديد:</span>
+            <input type="text" id="clientKeyInput" value="ahmed" placeholder="مثال: ahmed" oninput="syncManualKey(this.value)">
+        </div>
+        
+        <div>
+            <button class="btn btn-secondary" onclick="generateDefaultStructure()">إنشاء وحفظ الجدول ⚡</button>
+            <span id="saveStatus" style="margin-right: 15px; display: none;"><i class="fa-solid fa-cloud-arrow-up"></i> تم الحفظ تلقائياً!</span>
+        </div>
+
+        <!-- خانات الأوزان والملاحظات العامة للمتدرب المختار -->
+        <div class="meta-inputs">
+            <div class="meta-group">
+                <label><i class="fa-solid fa-weight-scale"></i> الوزن (كجم):</label>
+                <input type="text" id="clientWeightInput" placeholder="--">
+            </div>
+            <div class="meta-group">
+                <label><i class="fa-solid fa-percent"></i> الدهون (%):</label>
+                <input type="text" id="clientFatInput" placeholder="--">
+            </div>
+            <div class="meta-group notes-group">
+                <label><i class="fa-solid fa-comment-dots"></i> ملاحظات كابتن مصطفى العامة لهذا اللاعب:</label>
+                <input type="text" id="globalNotesInput" placeholder="اكتب توجيهات عامة للاعب تظهر في أعلى صفحته...">
+            </div>
+        </div>
     </div>
-    <div id="saveStatus"></div>
-    <div id="scheduleAppContainer"></div>
+
+    <!-- حاوية بناء الجدول التدريبي -->
+    <div id="scheduleBuilderApp"></div>
 </div>
 
 <!-- مكتبات الفايربيس السحابية -->
@@ -70,96 +103,263 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ⚠️ استبدل هذا الجزء فوراً بكود الـ firebaseConfig الحقيقي الخاص بمشروعك
-     const firebaseConfig = {
-  apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
-  authDomain: "gym-training-by-mostafa.firebaseapp.com",
-  projectId: "gym-training-by-mostafa",
-  storageBucket: "gym-training-by-mostafa.firebasestorage.app",
-  messagingSenderId: "397520948690",
-  appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
-  measurementId: "G-EWZEGSFP99"
+const firebaseConfig = {
+    apiKey: "AIzaSyCBN-d-L_a5AFc5ZtLMcp3dt2f8wl9ZIxk",
+    authDomain: "gym-training-by-mostafa.firebaseapp.com",
+    projectId: "gym-training-by-mostafa",
+    storageBucket: "gym-training-by-mostafa.firebasestorage.app",
+    messagingSenderId: "397520948690",
+    appId: "1:397520948690:web:db7c3fe301984ff96f8c0b",
+    measurementId: "G-EWZEGSFP99"
 };
 
-// تشغيل الفايربيس
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-function buildNewSchedule() {
-    const daysCount = parseInt(document.getElementById('daysCount').value); const exercisesCount = parseInt(document.getElementById('exercisesCount').value);
-    let html = `<h2 style="text-align:center; margin-bottom:35px; color:#fff;" contenteditable="true" id="tableHeaderTitle" onblur="saveAllData()">📋 الخطة التدريبية المخصصة</h2>`;
-    const defaultLabels = ["اليوم الأول", "اليوم الثاني", "اليوم الثالث", "اليوم الرابع", "اليوم الخامس", "اليوم السادس", "اليوم السابع"];
-    for (let d = 1; d <= daysCount; d++) {
-        html += `<div class="day-card"><div class="day-title" contenteditable="true" onblur="saveAllData()"><i class="fa-solid fa-arrow-trend-up"></i> ${defaultLabels[d-1] || `اليوم ${d}`}</div><div class="exercises-grid">`;
-        for (let e = 1; e <= exercisesCount; e++) {
-            html += `<div class="exercise-column" id="ex-card-${d}-${e}"><button class="btn-delete-exercise" onclick="deleteExerciseCard('${d}', '${e}')"><i class="fa-solid fa-trash-can"></i></button><div><div class="ex-header"><i class="fa-solid fa-dumbbell"></i><div class="ex-name" contenteditable="true" onblur="saveAllData()">تمرين ${e}: [اسم التمرين]</div></div><div class="ex-meta-info"><div class="ex-details"><b>المجموعات:</b> <span contenteditable="true" onblur="saveAllData()">4</span></div><div class="ex-details"><b>التكرارات:</b> <span contenteditable="true" onblur="saveAllData()">10-12</span></div></div><div class="ex-notes" contenteditable="true" onblur="saveAllData()">ملاحظة الأداء والتكنيك...</div></div><div class="video-input-box"><input type="text" class="video-url-input" placeholder="🔗 رابط الفيديو" oninput="liveUpdateVideoLink(this)"><a href="#" target="_blank" class="btn-video"><i class="fa-brands fa-youtube"></i> فيديو الشرح</a></div></div>`;
-        }
-        html += `</div></div>`;
-    }
-    document.getElementById('scheduleAppContainer').innerHTML = html; 
-    saveAllData();
+const daysOfWeek = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+let autoSaveTimeout;
+
+// 1. تحميل قائمة المتدربين المسجلين فور فتح الصفحة
+window.addEventListener('DOMContentLoaded', () => {
+    loadTraineesList();
+    setupGlobalAutoSave();
+    // جلب بيانات الحساب الافتراضي المكتوب في الخانة أولاً
+    loadTraineeDataFromServer(document.getElementById('clientKeyInput').value.trim());
+});
+
+// دالة لجلب كل المتدربين الذين لديهم جداول محفوظة في السيرفر لتسهيل البحث واختيارهم
+function loadTraineesList() {
+    db.collection("gym_schedules").get().then((querySnapshot) => {
+        const selector = document.getElementById('traineeSelector');
+        // تفريغ القائمة باستثناء الخيار الأول
+        selector.innerHTML = '<option value="">-- اختر متدرباً للتعديل أو البحث --</option>';
+        
+        querySnapshot.forEach((doc) => {
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.innerText = `المتدرب: ${doc.id}`;
+            selector.appendChild(option);
+        });
+    }).catch(err => console.error("خطأ في جلب القائمة: ", err));
 }
 
-function deleteExerciseCard(dayIndex, exerciseIndex) { const card = document.getElementById(`ex-card-${dayIndex}-${exerciseIndex}`); if (card) { card.remove(); saveAllData(); } }
-function liveUpdateVideoLink(inputEl) { const btnVideo = inputEl.nextElementSibling; btnVideo.href = inputEl.value ? inputEl.value : "#"; saveAllData(); }
+// دالة عند اختيار اسم من القائمة المنسدلة
+function selectTrainee(selectedKey) {
+    if(!selectedKey) return;
+    document.getElementById('clientKeyInput').value = selectedKey;
+    loadTraineeDataFromServer(selectedKey);
+}
 
-// حفظ جميع البيانات تلقائياً على السيرفر الفايربيس عند تعديل أي نص
-function saveAllData() {
-    const clientName = document.getElementById('clientName').value.trim();
-    if (!clientName) return;
+// دالة لمزامنة الخانة اليدوية مع النظام
+function syncManualKey(val) {
+    triggerAutoSave();
+}
 
-    document.getElementById('saveStatus').innerText = "جاري الحفظ سحابياً... ⏳";
+// 2. توليد الهيكل المبدئي للأيام السبعة
+function generateDefaultStructure() {
+    const app = document.getElementById('scheduleBuilderApp');
+    app.innerHTML = "";
+    
+    daysOfWeek.forEach((day, dayIndex) => {
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card';
+        dayCard.dataset.dayName = day;
+        dayCard.innerHTML = `
+            <div class="day-title"><i class="fa-solid fa-calendar-day" style="color:var(--primary);"></i> يوم ${day}</div>
+            <div class="exercises-grid" id="grid-day-${dayIndex}"></div>
+            <button class="btn btn-secondary" style="margin-top:15px; padding:6px 12px; font-size:12px;" onclick="addExerciseField(${dayIndex}, '', '', '', '', '', '')">
+                <i class="fa-solid fa-plus"></i> إضافة تمرين لهذا اليوم
+            </button>
+        `;
+        app.appendChild(dayCard);
+        
+        // إضافة 3 تمارين فارغة كبداية
+        for(let i=0; i<3; i++) {
+            addExerciseField(dayIndex, '', '', '', '', '', '');
+        }
+    });
+    triggerAutoSave();
+}
 
-    const containerHtml = document.getElementById('scheduleAppContainer').innerHTML;
-    const inputs = document.querySelectorAll('.video-url-input');
-    const inputValues = [];
-    inputs.forEach(input => inputValues.push(input.value));
+// 3. إضافة حقول تمرين داخل يوم معين
+function addExerciseField(dayIndex, name='', sets='', reps='', rest='', rpe='', video='') {
+    const grid = document.getElementById(`grid-day-${dayIndex}`);
+    const box = document.createElement('div');
+    box.className = 'exercise-column';
+    box.innerHTML = `
+        <div class="ex-header">
+            <input type="text" class="ex-name-input" value="${name}" placeholder="اسم التمرين...">
+            <button class="btn-delete-exercise" onclick="this.parentElement.parentElement.remove(); triggerAutoSave();">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div class="ex-details-form">
+            <div class="field-box"><label>الجولات</label><input type="text" class="ex-sets" value="${sets}" placeholder="مثال: 4"></div>
+            <div class="field-box"><label>التكرارات</label><input type="text" class="ex-reps" value="${reps}" placeholder="مثال: 12"></div>
+            <div class="field-box"><label>الراحة</label><input type="text" class="ex-rest" value="${rest}" placeholder="90 ثانية"></div>
+            <div class="field-box"><label>RPE (الجهد)</label><input type="text" class="ex-rpe" value="${rpe}" placeholder="8/10"></div>
+        </div>
+        <div class="field-box">
+            <label><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> رابط فيديو الشرح المساعد:</label>
+            <input type="url" class="video-url-input" value="${video}" placeholder="https://youtube.com/...">
+            <a class="btn-video" href="${video || '#'}" target="_blank" style="display:${video ? 'flex' : 'none'}; margin-top:5px; background:#27272a; color:#fff; border:1px solid #3f3f46;">
+                <i class="fa-solid fa-play"></i> تجربة الرابط الحالي
+            </a>
+        </div>
+    `;
+    
+    // مراقبة المدخلات داخل مربع التمرين لتشغيل الحفظ التلقائي
+    box.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => {
+            if(input.classList.contains('video-url-input')) {
+                const btn = input.nextElementSibling;
+                btn.href = input.value;
+                btn.style.display = input.value ? 'flex' : 'none';
+            }
+            triggerAutoSave();
+        });
+    });
+    
+    grid.appendChild(box);
+}
 
-    // إرسال البيانات كاملة لـ Firestore
-    db.collection("gym_schedules").doc(clientName).set({
-        weight: document.getElementById('clientWeight').innerText,
-        fat: document.getElementById('clientFat').innerText,
-        globalNotes: document.getElementById('captainGlobalNotes').innerText,
-        fullHtml: containerHtml,
-        videoLinks: JSON.stringify(inputValues),
-        updatedAt: new Date()
-    }).then(() => {
-        document.getElementById('saveStatus').innerText = "تم الحفظ تلقائياً في السحابة بنجاح! ✅";
-    }).catch(err => {
-        document.getElementById('saveStatus').innerText = "خطأ أثناء الحفظ السحابي: " + err.message;
+// 4. إعداد الحفظ التلقائي الذكي عند الكتابة
+function setupGlobalAutoSave() {
+    ['clientWeightInput', 'clientFatInput', 'globalNotesInput'].forEach(id => {
+        document.getElementById(id).addEventListener('input', triggerAutoSave);
     });
 }
 
-// جلب آخر بيانات مخزنة من السيرفر عند فتح الصفحة
-function loadAllData() {
-    const clientName = document.getElementById('clientName').value.trim();
-    db.collection("gym_schedules").doc(clientName).get().then((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            document.getElementById('clientWeight').innerText = data.weight || "85";
-            document.getElementById('clientFat').innerText = data.fat || "15";
-            document.getElementById('captainGlobalNotes').innerText = data.globalNotes || "";
-            document.getElementById('scheduleAppContainer').innerHTML = data.fullHtml || "";
+function triggerAutoSave() {
+    clearTimeout(autoSaveTimeout);
+    autoSaveTimeout = setTimeout(saveDataToServer, 1500); // حفظ تلقائي بعد ثانية ونصف من التوقف عن الكتابة
+}
+
+// 5. تجميع البيانات وحفظها السحابي في الفايربيس
+function saveDataToServer() {
+    const clientKey = document.getElementById('clientKeyInput').value.trim();
+    if (!clientKey) return;
+    
+    const weight = document.getElementById('clientWeightInput').value;
+    const fat = document.getElementById('clientFatInput').value;
+    const globalNotes = document.getElementById('globalNotesInput').value;
+    
+    const dayCards = document.querySelectorAll('.day-card');
+    if(dayCards.length === 0) return;
+    
+    let htmlOutput = "";
+    let videoLinksArray = [];
+    let stateArray = []; // لحفظ قيم المدخلات من أجل إعادة تحميلها للكابتن لاحقاً
+    
+    dayCards.forEach((card, dayIndex) => {
+        const dayName = card.dataset.dayName;
+        const exercises = card.querySelectorAll('.exercise-column');
+        
+        let dayExercisesHtml = "";
+        let dayState = [];
+        
+        exercises.forEach(ex => {
+            const name = ex.querySelector('.ex-name-input').value.trim();
+            const sets = ex.querySelector('.ex-sets').value.trim();
+            const reps = ex.querySelector('.ex-reps').value.trim();
+            const rest = ex.querySelector('.ex-rest').value.trim();
+            const rpe = ex.querySelector('.ex-rpe').value.trim();
+            const video = ex.querySelector('.video-url-input').value.trim();
             
-            if (data.videoLinks) {
-                const savedValues = JSON.parse(data.videoLinks);
-                const inputs = document.querySelectorAll('.video-url-input');
-                inputs.forEach((input, index) => {
-                    if(savedValues[index]) {
-                        input.value = savedValues[index];
-                        input.nextElementSibling.href = savedValues[index];
-                    }
+            dayState.push({ name, sets, reps, rest, rpe, video });
+            
+            if(name) {
+                videoLinksArray.push(video);
+                dayExercisesHtml += `
+                    <div class="exercise-column">
+                        <div class="ex-header"><i class="fa-solid fa-circle-check"></i><div class="ex-name">${name}</div></div>
+                        <div class="ex-meta-info">
+                            <div class="ex-details"><b>الجولات:</b><span>${sets || '--'}</span></div>
+                            <div class="ex-details"><b>التكرارات:</b><span>${reps || '--'}</span></div>
+                            <div class="ex-details"><b>الراحة:</b><span>${rest || '--'}</span></div>
+                            <div class="ex-details"><b>مستوى الجهد RPE:</b><span>${rpe || '--'}</span></div>
+                        </div>
+                        <input type="text" class="video-url-input" value="${video}" style="display:none;">
+                        <a class="btn-video" href="${video}" target="_blank" style="display:none;"><i class="fa-solid fa-video"></i> مشاهدة فيديو التكنيك 📺</a>
+                    </div>
+                `;
+            }
+        });
+        
+        stateArray.push({ dayName, exercises: dayState });
+        
+        htmlOutput += `
+            <div class="day-card">
+                <div class="day-title"><i class="fa-solid fa-dumbbell"></i> تمارین يوم ${dayName}</div>
+                <div class="exercises-grid">${dayExercisesHtml || '<p style="color:var(--text-muted); font-size:14px;">يوم راحة واستشفاء عضلاتي تام 💤</p>'}</div>
+            </div>
+        `;
+    });
+    
+    const packet = {
+        weight: weight,
+        fat: fat,
+        globalNotes: globalNotes,
+        fullHtml: htmlOutput,
+        videoLinks: JSON.stringify(videoLinksArray),
+        editorState: JSON.stringify(stateArray),
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    db.collection("gym_schedules").doc(clientKey).set(packet)
+    .then(() => {
+        const status = document.getElementById('saveStatus');
+        status.style.display = "inline-flex";
+        setTimeout(() => { status.style.display = "none"; }, 2000);
+        // تحديث القائمة المنسدلة لضمان ظهور أي اسم جديد مباشرة
+        loadTraineesList();
+    })
+    .catch(err => console.error("خطأ الحفظ السحابي: ", err));
+}
+
+// 6. تحميل بيانات متدرب معين وإعادة بنائها في لوحة الكابتن عند البحث أو الاختيار
+function loadTraineeDataFromServer(clientKey) {
+    if(!clientKey) return;
+    
+    db.collection("gym_schedules").doc(clientKey).get().then((doc) => {
+        if(doc.exists) {
+            const data = doc.data();
+            document.getElementById('clientWeightInput').value = data.weight || "";
+            document.getElementById('clientFatInput').value = data.fat || "";
+            document.getElementById('globalNotesInput').value = data.globalNotes || "";
+            
+            if(data.editorState) {
+                const parsedState = JSON.parse(data.editorState);
+                const app = document.getElementById('scheduleBuilderApp');
+                app.innerHTML = "";
+                
+                parsedState.forEach((dayObj, dayIndex) => {
+                    const dayCard = document.createElement('div');
+                    dayCard.className = 'day-card';
+                    dayCard.dataset.dayName = dayObj.dayName;
+                    dayCard.innerHTML = `
+                        <div class="day-title"><i class="fa-solid fa-calendar-day" style="color:var(--primary);"></i> يوم ${dayObj.dayName}</div>
+                        <div class="exercises-grid" id="grid-day-${dayIndex}"></div>
+                        <button class="btn btn-secondary" style="margin-top:15px; padding:6px 12px; font-size:12px;" onclick="addExerciseField(${dayIndex}, '', '', '', '', '', '')">
+                            <i class="fa-solid fa-plus"></i> إضافة تمين لهذا اليوم
+                        </button>
+                    `;
+                    app.appendChild(dayCard);
+                    
+                    dayObj.exercises.forEach(ex => {
+                        addExerciseField(dayIndex, ex.name, ex.sets, ex.reps, ex.rest, ex.rpe, ex.video);
+                    });
                 });
             }
         } else {
-            buildNewSchedule();
+            // إذا كان المستخدم جديداً وليس لديه بيانات مخزنة
+            document.getElementById('clientWeightInput').value = "";
+            document.getElementById('clientFatInput').value = "";
+            document.getElementById('globalNotesInput').value = "";
+            document.getElementById('scheduleBuilderApp').innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد جدول محفوظ لهذا المعرف بعد. اضغط على زر "إنشاء وحفظ الجدول ⚡" للبدء في صياغة جدوله.</p>`;
         }
-    });
+    }).catch(err => console.error("خطأ أثناء جلب بيانات المتدرب: ", err));
 }
-
-// تحميل البيانات فور تغيير المعرف لمعاينة جداول المتدربين الآخرين
-document.getElementById('clientName').addEventListener('blur', loadAllData);
-window.onload = loadAllData;
 </script>
 </body>
 </html>
